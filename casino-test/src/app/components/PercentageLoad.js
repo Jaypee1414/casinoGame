@@ -86,13 +86,13 @@ const PercentageLoader = ({ setIsFinished }) => {
 
   return (
     <div className="inset-0 flex items-center justify-center bg-gradient-to-b from-[#1798CC] to-[#140950] h-screen z-40 relative">
-      <div className="w-[30rem] text-center pb-10 flex flex-col gap-10">
-        <div className="w-auto h-auto">
-          <img
-            src="/image/loadingImg.png"
-            alt="My image"
-            className="w-full h-auto "
-          />
+      <div className="w-[30rem] text-center pb-10 flex flex-col items-center justify-center gap-10">
+  <div className="flex items-center justify-center">
+    <img
+      src="/image/loadingImg.png"
+      alt="My image"
+      className="w-[500px] h-[500px] sm:max-w-[210px] sm:max-h-[180px] sm:mt-[40px] md:max-w-[220px] md:max-h-[160px] lg:max-w-[290px] lg:max-h-[250px] xl:max-w-[350px] xl:max-h-[300px] 2xl:max-w-[500px] 2xl:max-h-[420px]"
+    />
         </div>
         <div className=" flex justify-center items-center">
         <div className="mb-4 h-10 w-96 flex bg-[url('/image/loadingBackground.svg')]  bg-no-repeat bg-cover bg-center rounded-full overflow-hidden relative">
@@ -106,7 +106,7 @@ const PercentageLoader = ({ setIsFinished }) => {
             style={{ width: `${progress}%` }}
           >
             <div
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center font-jaro text-white font-extrabold text-3xl"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center font-jaro text-white font-extrabold text-3xl sm:text-"
               style={{
                 WebkitTextStroke: "0.5px black",
                 textStroke: "0.5px black", // Fallback
