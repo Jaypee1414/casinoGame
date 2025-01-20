@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -125,3 +126,4 @@ const PercentageLoader = ({ setIsFinished }) => {
 };
 
 export default PercentageLoader;
+

@@ -32,7 +32,7 @@ function GameBet() {
               alt="My image"
               width={50}
               height={50}
-              className="w-full h-full sm:w-[48px] sm:h-[48px] md:w-[52px] md:h-[52px] lg:w-[40px] lg:h-[40px]  xl:w-[55px] xl:h-[55px] 2xl:w-[70px] 2xl:h-[70px]"
+              className="w-full h-full sm:w-[48px] sm:h-[48px] md:w-[52px] md:h-[52px] lg:w-[40px] lg:h-[40px]  xl:w-[65px] xl:h-[65px] 2xl:w-[70px] 2xl:h-[70px]"
               style={{
                 transition: "transform 0.3s ease-in-out",
               }}
@@ -49,7 +49,7 @@ function GameBet() {
                   alt="My image"
                   width={200}
                   height={256}
-                  className="w-auto h-64 sm:max-w-[150px] sm:max-h-[90px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[250px] lg:max-h-[250px] xl:max-w-[300px] xl:max-h-[300px] 2xl:max-w-[370px] 2xl:max-h-[350px}"
+                  className="w-auto h-64 sm:max-w-[150px] sm:max-h-[90px] md:max-w-[190px] md:max-h-[105px] lg:max-w-[250px] lg:max-h-[250px] xl:max-w-[300px] xl:max-h-[300px] 2xl:max-w-[380px] 2xl:max-h-[370px}"
                   style={{
                     transition: "transform 0.3s ease-in-out",
                   }}
@@ -73,7 +73,7 @@ function GameBet() {
                   alt="My image"
                   width={200}
                   height={224}
-                  className="w-auto h-56 sm:max-w-[150px] sm:max-h-[90px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[250px] lg:max-h-[250px] xl:max-w-[300px] xl:max-h-[300px] 2xl:max-w-[370px] 2xl:max-h-[350px]"
+                  className="w-auto h-56 sm:max-w-[150px] sm:max-h-[90px] md:max-w-[190px] md:max-h-[105px] lg:max-w-[250px] lg:max-h-[250px] xl:max-w-[300px] xl:max-h-[300px] 2xl:max-w-[380px] 2xl:max-h-[370px}"
                   style={{
                     transition: "transform 0.3s ease-in-out",
                   }}
@@ -88,7 +88,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px] md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 0
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -101,7 +101,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px]  md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 1
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -114,7 +114,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px]  md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 2
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -129,7 +129,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px]  md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px]  2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 3
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -142,7 +142,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px] 2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px]  md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px] 2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 4
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -155,7 +155,7 @@ function GameBet() {
                     alt="My image"
                     width={200}
                     height={224}
-                    className={`w-auto h-56 sm:max-w-[70px] sm:max-h-[80px] md:max-w-[140px] md:max-h-[100px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px] 2xl:max-w-[190px] 2xl:max-h-[170px] transition-transform ease-in-out duration-300 ${
+                    className={`w-auto h-56 sm:max-w-[55px] sm:max-h-[65px] md:max-w-[135px] md:max-h-[95px] lg:max-w-[160px] lg:max-h-[150px] xl:max-w-[180px] xl:max-h-[160px] 2xl:max-w-[240px] 2xl:max-h-[210px] transition-transform ease-in-out duration-300 ${
                       activeIndex === 5
                         ? "transform translate-y-[-10px] scale-110"
                         : ""
@@ -171,7 +171,7 @@ function GameBet() {
                   alt="My image"
                   width={208}
                   height={104}
-                  className="w-52 h-auto sm:max-w-[90px] sm:mt-[-50px] sm:max-h-[60px] md:mt-[-60px] md:max-w-[110px] md:max-h-[70px] lg:max-w-[180px] lg:max-h-[130px] xl:max-w-[300px] xl:max-h-[300px] 2xl:max-w-[470px] 2xl:max-h-[450px] 2xl:mt-[20px]"
+                  className="w-52 h-auto sm:max-w-[95px] sm:mt-[-30px] sm:max-h-[65px] md:mt-[-30px] md:max-w-[110px] md:max-h-[70px] lg:max-w-[180px] lg:max-h-[130px] xl:max-w-[300px] xl:max-h-[300px] xl:mt-[20px] 2xl:max-w-[470px] 2xl:max-h-[450px] 2xl:mt-[30px]"
                   style={{
                     transition: "transform 0.3s ease-in-out",
                   }}
