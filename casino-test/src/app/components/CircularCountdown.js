@@ -15,7 +15,7 @@ function CircularCountdown({ isPlayerTurn, gameState, timer }) {
     isPlayerTurn && !gameState.gameEnded && (
       <div className="absolute top-14 left-1/2 transform -translate-x-1/2">
         <svg
-          className={`w-24 h-24 ${timer >= 10 ? "" : "animate-pulse"}`} // Increased width and height
+          className={`w-24 h-24 sm:w-[20px] sm:h-[20px] sm:mt-[40px] 2xl:w-[100px] 2xl:h-[100px] 2xl:mt-[-180px] 2xl:ml-[140px] ${timer >= 10 ? "" : "animate-pulse"}`} // Increased width and height
           width="120" // Size of the container to fit the full circle
           height="120"
           viewBox="0 0 120 120" // Adjusted viewBox to ensure the full circle fits
@@ -46,8 +46,8 @@ function CircularCountdown({ isPlayerTurn, gameState, timer }) {
             }}
           />
         </svg>
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-          <span className={`text-2xl font-bold ${timer >= 10 ? "text-black" : "text-white"}`}>
+        <div className="absolute top-0 sm:mt-[20px] 2xl:mt-[-130px] 2xl:ml-[70px] left-0 w-full h-full flex justify-center items-center">
+          <span className={`text-2xl sm:text-[8px] 2xl:text-[32px] font-bold ${timer >= 10 ? "text-black" : "text-white"}`}>
             {timer}s
           </span>
         </div>

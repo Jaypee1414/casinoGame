@@ -105,17 +105,17 @@ function TogitsGame() {
                  Choose Your Game Mode
               </h3>
 
-         <div className="flex flex-row gap-6 mb-[-10px] justify-center w-full">
-            <div className="flex justify-center">
+         <div className="flex flex-row gap-5 justify-center w-full">
+           {/* <div className="flex justify-center">
              <button 
               className="bg-[url('/image/playbotButton.svg')] bg-no-repeat bg-center bg-cover sm:bg-contain md:bg-cover lg:bg-cover xl:bg-cover 2xl:bg-cover"
               onClick={handleButtonClick}
               >
-               <p className="text-[12px] sm:text-[12px] md:text-[18px] lg:text-[24px] font-bold tracking-tight text-transparent  text-white">
+               <p className="text-[12px] sm:text-[16px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[32px] font-bold tracking-tight text-transparent  text-white">
                   Play with bot
                </p>
                </button>
-            </div>
+            </div>*/}
 
             <div className="flex justify-center">
              <button
@@ -123,7 +123,7 @@ function TogitsGame() {
               onClick={handleButtonClickLive}
                >
                 <p className="text-[12px] sm:text-[16px] md:text-[18px] lg:text-[24px] xl:text-[28px] 2xl:text-[32px] font-bold tracking-tight text-transparent text-white">
-                  Live Game
+                  Start Game
                 </p>
              </button>
            </div>

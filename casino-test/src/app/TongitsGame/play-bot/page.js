@@ -267,9 +267,9 @@ export default function TongitGame() {
 
   console.log("Game Ended", gameState.gameEnded);
   return (
-    <div className="flex flex-col items-center justify-center w-full  min-h-screen bg-[url('/image/TableBot.svg')]  bg-no-repeat bg-cover bg-center relative">
+    <div className="flex flex-col items-center justify-center w-full sm:w-[20px]  min-h-screen bg-[url('/image/TableBot.svg')]  bg-no-repeat bg-cover bg-center relative">
       {/* header game */}
-      <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
+      <div className="absolute w-screen h-16  top-0 bg-custom-gradient">
         <div className="flex flex-row h-full w-full justify-between">
           <button onClick={toggleSidebar}>
             <img
@@ -381,7 +381,7 @@ export default function TongitGame() {
                 onClose={() => setIsDiscardPileOpen(false)}
               />
               <button
-                className="absolute -right-3 top-12 text-white text-xl"
+                className="absolute right-3 top-12 text-white text-xl"
                 onClick={DiscardPileModal}
               >
                 <div className="w-full h-10">
@@ -566,7 +566,7 @@ export default function TongitGame() {
                 onClick={animateClick}
                 src="/image/auoSort.svg"
                 alt="My image"
-                className="w-32 h-32" // Explicit width and height
+                className="w-12 h-12" // Explicit width and height
                 style={{
                   transform: `scale(${scale})`,
                   transition: "transform 0.3s ease-in-out",
@@ -602,7 +602,7 @@ export default function TongitGame() {
                 onClick={animateClick}
                 src="/image/depositButton.svg"
                 alt="My image"
-                className="w-36 h-32" // Explicit width and height
+                className="w-36 h-32 sm:w-[20px] sm:h-[20px]" // Explicit width and height
                 style={{
                   transform: `scale(${scale})`,
                   transition: "transform 0.3s ease-in-out",

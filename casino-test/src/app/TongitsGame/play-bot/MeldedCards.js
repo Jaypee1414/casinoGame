@@ -78,7 +78,7 @@ export function MeldedCards({
       case 0:
         return "hidden";
       case 1:
-        return "top-36 right-14 2xl:right-32 z-20";
+        return "top-36 2xl:top-52 right-14 sm:right-[12px]  2xl:right-32 z-20";
       case 2:
         return "top-36 2xl:top-48 left-14 2xl:left-32 z-20";
       default:

@@ -486,7 +486,7 @@ export default function LiveGame() {
                 onClick={animateClick}
                 src="/image/auoSort.svg"
                 alt="Auto Sort"
-                className="w-32 h-32"
+                className="w-32 h-32 sm:w-[10px]"
                 style={{
                   transform: `scale(${scale})`,
                   transition: "transform 0.3s ease-in-out",

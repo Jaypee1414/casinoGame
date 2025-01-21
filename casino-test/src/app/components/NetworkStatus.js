@@ -52,11 +52,11 @@ const NetworkStatus = () => {
   return (
     <div className="flex items-center space-x-2" style={{paddingRight:"10px"}}>
       {latency !== null && (
-        <span className={`text-sm ${getConnectionColor()}`}>
+        <span className={`text-sm sm:text-[12px] 2xl:text-[20px] ${getConnectionColor()}`}>
           {latency}ms
         </span>
       )}
-      <Wifi className={`w-9 h-9 ${getConnectionColor()}`} />
+      <Wifi className={`w-9 h-9 sm:w-[15px] sm:h-[15px] 2xl:w-[25px] 2xl:h-[25px] ${getConnectionColor()}`} />
       {/* {connectionType && (
         <span className="text-sm text-gray-500">({connectionType})</span>
       )} */}

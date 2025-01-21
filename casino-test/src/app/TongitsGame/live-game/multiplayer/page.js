@@ -309,14 +309,14 @@ const Game = () => {
   const isPlayerTurn = gameState.currentPlayerIndex === gameState.players.findIndex(p => p.id === socket.id);
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
-      <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
+      <div className="absolute w-screen h-16 sm:max-h-[40px] md:max-w-[] md:max-h-[] lg:max-w-[] lg:max-h-[] xl:max-w-[] xl:max-h-[] 2xl:max-w-[] 2xl:max-h-[] top-0 bg-custom-gradient">
         <div className="flex flex-row h-full w-full justify-between">
           <button onClick={toggleSidebar}>
             <img
               onClick={animateClick}
               src="/image/sideBarButton.svg"
               alt="Sidebar"
-              className="w-full h-full"
+              className="w-full h-full sm:max-w-[35px] sm:max-h-[35px] sm:mt-[-6px] md:max-w-[] md:max-h-[] lg:max-w-[] lg:max-h-[] xl:max-w-[] xl:max-h-[] 2xl:max-w-[] 2xl:max-h-[]"
               style={{
                 transform: `scale(${scale})`,
                 transition: "transform 0.3s ease-in-out",
@@ -420,13 +420,13 @@ const Game = () => {
           getCardValue={calculateCardPoints}
         />
       </div>
-      <div className="absolute right-0 bottom-0 w-24 h-24 ">
+      <div className="absolute right-0 bottom-0 sm:bottom-20 w-24 h-24 ">
         <button onClick={toggleChat}>
           <img
             onClick={animateClick}
             src="/image/chatButton.svg"
             alt="My image"
-            className="w-24 h-24 absolute right-2 2xl:right-10 bottom-28"
+            className="w-24 h-24 sm:w-[24px] sm:h-[24px] sm:bottom-[-6px] sm:mr-[9px] 2xl:w-[100px] 2xl:h-[100px] 2xl:mr-[-20px] absolute right-2 2xl:right-10 bottom-28 "
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",

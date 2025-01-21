@@ -20,7 +20,7 @@ const ActionText = ({ action }) => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="absolute flex  font-extrabold font-jaro justify-center items-center bg-black/40 text-white px-4 py-2 rounded-lg text-xl z-50 "
+          className="absolute flex  font-extrabold font-jaro justify-center items-center bg-black/40 text-white px-4 py-2 rounded-lg text-xl sm:text-xs sm:w-[300px] xs:h-[10px] z-50 "
         >
           {action}
         </motion.div>

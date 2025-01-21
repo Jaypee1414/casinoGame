@@ -212,10 +212,10 @@ function ScoreDashboard({socketId ,gameState, onClose, resetGame, Reset,setPlaye
                     {/* Player points */}
                     <div className="">
                       <div className="absolute right-0 p-5 flex flex-row justify-center gap-2 items-center ">
-                        <div className="rounded-full p-2 text-2xl bg-[url('/image/pointsBG.svg')] bg-no-repeat bg-cover bg-center font-extrabold border-2 w-14 h-14 border-black items-center justify-center flex ">
+                        <div className="rounded-full p-2 text-2xl bg-[url('/image/pointsBG.svg')] bg-no-repeat bg-cover bg-center font-extrabold border-2 w-14 h-14  border-black items-center justify-center flex ">
                           {player.score}
                         </div>
-                        <h4 className="text-white font-bold text-xl">Points</h4>
+                        <h4 className="text-white font-bold text-2xl sm:text-xs">Points</h4>
                       </div>
                       <img
                         src=" /image/scoreboardBGDeduction.svg"

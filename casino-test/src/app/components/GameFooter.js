@@ -25,8 +25,8 @@ const GameFooter = ({
   };
 
   return (
-    <div className="px-16 2xl:px-36 flex w-screen items-center gap-11 h-32 absolute bottom-0 left-0 justify-between">
-      <div className="space-x-3">
+    <div className="px-16 2xl:px-36 flex w-screen items-center gap-11 h-32 absolute bottom-0 sm:mb-[-26px] 2xl:mb-[20px] left-0 justify-between">
+      <div className="space-x-3 sm:w-[400px] 2xl:w-[780px] ">
         <button
           onClick={onMeld}
           disabled={!isPlayerTurn || selectedIndices.length < 3 || !hasDrawnThisTurn || gameEnded}
@@ -35,7 +35,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/dropButton.svg"
             alt="Meld"
-            className="w-[115px] 2xl:w-[145px] h-full"
+            className="w-[115px] sm:w-[36px] sm:h-[26px]  2xl:w-[180px] 2xl:h-[80px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
@@ -51,7 +51,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/dumpButton.svg"
             alt="Discard"
-            className="w-[115px] 2xl:w-[145px] h-full"
+            className="w-[115px] sm:w-[36px] sm:h-[26px]  2xl:w-[180px] 2xl:h-[80px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
@@ -66,7 +66,7 @@ const GameFooter = ({
           <img
             src="/image/sapawButton.svg"
             alt="Sapaw"
-            className="w-[115px] 2xl:w-[145px] h-full"
+            className="w-[115px] sm:w-[36px] sm:h-[26px]  2xl:w-[180px] 2xl:h-[80px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
@@ -82,7 +82,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/fightButton.svg"
             alt="Call Draw"
-            className="w-[115px] 2xl:w-[145px] h-full"
+            className="w-[115px] sm:w-[36px] sm:h-[26px] 2xl:w-[180px] 2xl:h-[80px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
@@ -97,7 +97,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/auoSort.svg"
             alt="Auto Sort"
-            className="w-32 h-32"
+            className="w-32 h-32 sm:w-[36px] sm:h-[36px] 2xl:w-[100px] 2xl:h-[100px]"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out"
@@ -109,7 +109,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/shuffleButton.svg"
             alt="Shuffle"
-            className="w-32 h-32"
+            className="w-32 h-32 sm:w-[36px] sm:h-[36px] 2xl:w-[100px] 2xl:h-[100px]"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out"
@@ -121,7 +121,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/withdrawButton.svg"
             alt="Withdraw"
-            className="w-36 h-32"
+            className="w-36 h-32 sm:w-[56px] sm:h-[56px] 2xl:w-[180px] 2xl:h-[80px] "
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out"
@@ -133,7 +133,7 @@ const GameFooter = ({
             onClick={animateClick}
             src="/image/depositButton.svg"
             alt="Deposit"
-            className="w-36 h-32"
+            className="w-36 h-32 sm:w-[56px] sm:h-[56px] 2xl:w-[180px] 2xl:h-[80px]"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out"
