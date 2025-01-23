@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
@@ -11,6 +12,21 @@ const config = {
         '26rem': '26rem',
         '78': '78%',
       },
+      screens: {
+       sm: '640px',
+        md: '768px',
+       lg: '1024px',
+        xl: '1280px',
+        '2xl': '1360px'
+      }, 
+
+     // aspectRatio:{
+         // '16/9' :'16/9', //default(mobile)
+         // '4/3' : '4/3', //small screens -sm
+         // '21/9' : '21/9', //large screens -lg
+         // '32/9' : '32/9', //extra large screens -xl
+         // '1/1' : '1/1', //square aspect ratio
+     // },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

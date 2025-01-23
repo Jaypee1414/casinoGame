@@ -42,7 +42,7 @@ export function Card({contextText, position, border,transformCard,id ,opacityCar
       default: return '';
     }
   };
-  const baseClasses = `${opacityCard} bg-white border border-gray-300 rounded-md shadow-sm flex flex-col justify-between cursor-pointer ${color}`;
+  const baseClasses = `${opacityCard} bg-white border border-gray-300 rounded-md sm:w-[27px] sm:p-[5px] sm:h-[36px] md:w-[37px] md:h-[48px] md:p-[4px] lg:h-[62px] lg:w-[45px] 2xl:h-[88px] 2xl:w-[68px] shadow-sm flex flex-col justify-between cursor-pointer ${color}`;
 
   // Make the card bigger by adjusting width, height, and padding
   const sizeClasses = small 
@@ -62,8 +62,8 @@ export function Card({contextText, position, border,transformCard,id ,opacityCar
     onClick={onClick}
     ref={boxRef} 
   >
-    <div className="text-left font-bold text-2xl">{rank}</div>
-    <div className={`text-center ${contextText ? contextText : "text-4xl" }  2xl:text-4xl`}>
+    <div className="text-left font-bold text-2xl sm:text-[10px] sm:mt-[-12px] sm:ml-[-2px] md:text-[12px] md:ml-[2px] lg:text-[14px] 2xl:text-[18px] 2xl:mt-[-2px] 2xl:ml-[2px]">{rank}</div>
+    <div className={`text-center ${contextText ? contextText : "text-4xl sm:text-[10px] sm:ml-[6px] sm:mt-[-21px] md:text-[12px] lg:text-[14px] 2xl:text-4xl" }   2xl:text-4xl sm:text-[8px] sm:mt-[-21px]`}>
       {getSuitSymbol(suit)}
     </div>
   </div></motion.div> 
