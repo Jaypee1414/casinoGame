@@ -424,15 +424,111 @@ function handleTongits(game) {
   game.lastAction = { player: currentPlayer.name, type: 'Achieved Tongits!' };
 }
 
-// note handle auto sort card
+//Jenn
+
+export const findMelds = (hand) => {
+  const melds = [];
+  let remainingCards = [...hand];
+
+  while (true) {
+    const meld = findAndRemoveMeld(remainingCards);
+    if (!meld) break;
+    melds.push(meld);
+  }
+
+  return { melds, remainingCards };
+};
+
+const findAndRemoveMeld = (cards) => {
+  // Check for three-of-a-kind
+  for (let i = 0; i < cards.length - 2; i++) {
+    for (let j = i + 1; j < cards.length - 1; j++) {
+      for (let k = j + 1; k < cards.length; k++) {
+        if (
+          cards[i].rank === cards[j].rank &&
+          cards[j].rank === cards[k].rank
+        ) {
+          const meld = [cards[i], cards[j], cards[k]];
+          cards.splice(k, 1);
+          cards.splice(j, 1);
+          cards.splice(i, 1);
+          return meld;
+        }
+      }
+    }
+  }
+
+  // Check for straight flush
+  const sortedCards = [...cards].sort(
+    (a, b) => rankToNumber(a.rank) - rankToNumber(b.rank)
+  );
+  for (let i = 0; i < sortedCards.length - 2; i++) {
+    if (
+      sortedCards[i].suit === sortedCards[i + 1].suit &&
+      sortedCards[i + 1].suit === sortedCards[i + 2].suit &&
+      rankToNumber(sortedCards[i + 1].rank) -
+        rankToNumber(sortedCards[i].rank) ===
+        1 &&
+      rankToNumber(sortedCards[i + 2].rank) -
+        rankToNumber(sortedCards[i + 1].rank) ===
+        1
+    ) {
+      const meld = [sortedCards[i], sortedCards[i + 1], sortedCards[i + 2]];
+      cards.splice(cards.indexOf(sortedCards[i + 2]), 1);
+      cards.splice(cards.indexOf(sortedCards[i + 1]), 1);
+      cards.splice(cards.indexOf(sortedCards[i]), 1);
+      return meld;
+    }
+  }
+
+  return null;
+};
+
+const rankToNumber = (rank) => {
+  const rankOrder = [
+    "A",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+  ];
+  return rankOrder.indexOf(rank);
+};
+
+
 function handleAutoSort(game, playerIndex) {
   const player = game.players[playerIndex];
-  player.hand.sort((a, b) => {
+  const hand = player.hand;
+
+  // Find all possible melds in the hand
+  const melds = [];
+  let remainingCards = [...hand];
+
+  while (true) {
+    const meld = findAndRemoveMeld(remainingCards);
+    if (!meld) break;
+    melds.push(meld);
+  }
+
+  // Sort the melds and remaining cards
+  melds.forEach(meld => meld.sort((a, b) => rankToNumber(a.rank) - rankToNumber(b.rank)));
+  remainingCards.sort((a, b) => {
     if (a.suit !== b.suit) {
       return a.suit.localeCompare(b.suit);
     }
-    return a.rank.localeCompare(b.rank);
+    return rankToNumber(a.rank) - rankToNumber(b.rank);
   });
+
+  // Combine melds and remaining cards back into the hand
+  player.hand = [...melds.flat(), ...remainingCards];
 }
 
 //note player do shuffle
