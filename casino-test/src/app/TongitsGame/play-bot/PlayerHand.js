@@ -1,3 +1,5 @@
+PlayerHand
+
 import React from "react";
 import { Card } from "./Card";
 import { motion } from "framer-motion";
@@ -61,10 +63,11 @@ export function PlayerHand({
   return (
     <div
       ref={containerRef}
-      className={`flex flex-wrap justify-center p-4 rounded-lg relative ${
+      className={`flex flex-wrap justify-center p-4 rounded-lg relative bg-black ${
         isCurrentPlayer ? "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem] " : "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]"
       }`}
     >
+      
       {hand?.map((card, index) => (
         <motion.div
           key={`${card.suit}-${card.rank}-${index}`}
@@ -95,6 +98,7 @@ export function PlayerHand({
             onClick={() => handleCardClick(index)}
             isDiscarding={discardingIndex === index}
           />
+
         </motion.div>
       ))}
       {isCurrentPlayer && (
@@ -107,4 +111,3 @@ export function PlayerHand({
     </div>
   );
 }
-

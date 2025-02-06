@@ -56,7 +56,7 @@ const Game = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [timer, setTimer] = useState(40);
+  const [timer, setTimer] = useState(100);
   const [timerExpired, setTimerExpired] = useState(false);
   const timerRef = useRef(null);
 
@@ -165,7 +165,7 @@ const Game = () => {
       setIsChallengeModalOpen(false);
       setIsDiscardPileOpen(false);
       setIsScoreboardVisible(false);
-      setTimer(40); // Reset timer
+      setTimer(100); // Reset timer
   
       // Re-join with the same player name
       if (playerName) {
@@ -201,7 +201,7 @@ const Game = () => {
               timerRef.current = null;
               setTimerExpired(true);
               handleAutoPlay();
-              return 40;
+              return 100;
             }
             return prevTimer - 1;
           });
@@ -641,6 +641,7 @@ const Game = () => {
       <GameFooter
         timer={timer}
         onShuffle={() => handleAction({ type: "shuffle" })}
+        onAutoSort={()=> handleAction({ type: "autoSort" })}
         onMeld={() => {
           if (
             isPlayerTurn &&
