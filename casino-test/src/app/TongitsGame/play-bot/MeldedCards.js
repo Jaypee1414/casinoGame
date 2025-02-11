@@ -152,7 +152,7 @@ export function MeldedCards({
                               border={`1px solid black`}
                               transformCard={`perspective(500px) rotateX(40deg)`}
                               cardSize={"w-14 h-auto p-1 text-xl 2xl:text-lg"}
-                              card={card}
+                              card={card} 
                             />
                           </motion.div>
                         ))}
