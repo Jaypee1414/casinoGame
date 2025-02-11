@@ -707,6 +707,7 @@ const Game = () => {
       <GameFooter
         timer={timer}
         onShuffle={() => handleAction({ type: "shuffle" })}
+        onAutoSort={()=> handleAction({ type: "autoSort" })}
         onMeld={() => {
           if (
             isPlayerTurn &&
