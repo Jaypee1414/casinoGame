@@ -60,14 +60,15 @@ const Game = () => {
   const [enableFight, setEnableFight] = useState(false);
   const [isCurrentPlayerSapawTarget, setIsCurrentPlayerSapawTarget] = useState(false);
   const [sapawCounter, setSapawCounter] = useState(1);
-  const [isPlayerSapawCounter, setIsPlayerSapawCounter] = useState(0);
+  const [timerExpired, setTimerExpired] = useState(false)
+  
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const hasIncremented = useRef(false)
+  const previousPlayerIndexRef = useRef(null)
 
   const [timer, setTimer] = useState(2000);
-  const [timerExpired, setTimerExpired] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -212,41 +213,54 @@ const Game = () => {
   }, []);
 
   useEffect(() => {
-    const isPlayerTurn =
-      gameState &&
-      gameState.currentPlayerIndex ===
-        gameState.players.findIndex((p) => p.id === socket?.id);
+    const currentPlayerIndex = gameState?.currentPlayerIndex
+    const isPlayerTurn = gameState && currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket?.id)
 
-    if (isPlayerTurn && !gameState?.gameEnded) {
+    if (!gameState?.gameEnded && isDealingDone) {
+      // Reset timer only when the turn changes
+      if (currentPlayerIndex !== previousPlayerIndexRef.current) {
+        if (timerRef.current) {
+          clearInterval(timerRef.current)
+          timerRef.current = null
+        }
+        setTimer(2000)
+        setTimerExpired(false)
+      }
+
       if (!timerRef.current) {
         timerRef.current = setInterval(() => {
           setTimer((prevTimer) => {
             if (prevTimer <= 1) {
-              clearInterval(timerRef.current);
-              timerRef.current = null;
-              setTimerExpired(true);
-              handleAutoPlay();
-              return 2000;
+              clearInterval(timerRef.current)
+              timerRef.current = null
+              setTimerExpired(true)
+              if (isPlayerTurn) {
+                handleAutoPlay()
+              }
+              return 2000
             }
-            return prevTimer - 1;
-          });
-        }, 1000);
+            return prevTimer - 1
+          })
+        }, 1000)
       }
     } else {
       if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
+        clearInterval(timerRef.current)
+        timerRef.current = null
       }
-      setTimerExpired(false);
+      setTimerExpired(false)
     }
+
+    // Update the previous player index
+    previousPlayerIndexRef.current = currentPlayerIndex
 
     return () => {
       if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
+        clearInterval(timerRef.current)
+        timerRef.current = null
       }
-    };
-  }, [gameState, socket?.id, isDealingDone]); // Added isDealingDone to dependencies
+    }
+  }, [gameState, socket?.id, isDealingDone]) // Added isDealingDone to dependencies
 
 
   useEffect(() => {
@@ -301,14 +315,10 @@ useEffect(() => {
 if (gameState && gameState.players && socket) {
   const player = gameState.players.find((p) => p.id === socket.id);
   
-  // Update state for sapaw target status
-  if (isPlayerSapawCounter > 0) {
-    setIsCurrentPlayerSapawTarget(false);
-  } else {
+
     if (player && isCurrentPlayerSapawTarget !== player.isSapawed) {
       setIsCurrentPlayerSapawTarget(player.isSapawed);
     }
-  }
 
   // Determine turn status
   const isCurrentPlayerTurn = 
@@ -326,14 +336,23 @@ if (gameState && gameState.players && socket) {
       setSapawCounter((prev) => prev + 1);
     } else if (sapawCounter === 2) {
       setSapawCounter(1);
-      setIsPlayerSapawCounter((prev) => prev + 1);
+      if (socket && socket.connected) {
+        try {
+          socket.emit("sapaw", { playerId: socket.id });
+        } catch (error) {
+          console.error("Error emitting sapaw event:", error);
+        }
+      } else {
+        console.error("Socket is not connected");
+      }
+      setIsCurrentPlayerSapawTarget(player.isSapawed);
     } else {
       setSapawCounter((prev) => prev + 1);
     }
-    hasProcessedTurnEnd.current = true; // Prevent duplicate increments
+    hasProcessedTurnEnd.current = true;
   }
 }
-}, [gameState, socket?.id, isCurrentPlayerSapawTarget, sapawCounter, isPlayerSapawCounter]);
+}, [gameState, socket?.id, isCurrentPlayerSapawTarget, sapawCounter]);
 
   const isAnimatingRef = useRef(false);
   const discardTimeoutRef = useRef(null);
@@ -603,6 +622,10 @@ if (gameState && gameState.players && socket) {
     gameState.currentPlayerIndex ===
     gameState.players.findIndex((p) => p.id === socket.id);
 
+    // console.log("sapaw", sapawCounter, "fight", isPlayerSapawCounter);
+    console.log("gamestate", gameState);
+    console.log("sapawcnt", sapawCounter);
+
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
@@ -741,7 +764,7 @@ if (gameState && gameState.players && socket) {
               cardSize={" w-1.5 h-22 p-2 text-4xl"}
               hand={gameState.players.find((p) => p.id === socket.id)?.hand}
               onCardClick={(index) => {
-                if (isPlayerTurn && !gameState.gameEnded) {
+                if (!gameState.gameEnded) {
                   const newSelectedIndices = selectedIndices.includes(index)
                     ? selectedIndices.filter((i) => i !== index)
                     : [...selectedIndices, index];
@@ -816,7 +839,7 @@ if (gameState && gameState.players && socket) {
             selectedIndices.length === 1 &&
             !gameState.gameEnded
           ) {
-            setDiscardingIndex(selectedIndices[0]);
+            setDiscardingIndex(selectedIndices[0]); 
             setTimeout(() => {
               handleAction({ type: "discard", cardIndex: selectedIndices[0] });
               setSelectedIndices([]);
