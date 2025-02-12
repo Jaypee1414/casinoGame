@@ -11,6 +11,7 @@ import {
   dealCards,
   isValidMeld,
   calculateHandPoints,
+  calculateCardPoints,
   canFormMeldWithCard,
   sortCards,
   shuffleDeck,
@@ -194,6 +195,38 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("sapaw", (data) => {
+    
+    const { playerId } = data;
+    
+    const game = Array.from(games.values()).find((g) =>
+      g.players.some((p) => p.id === playerId)
+    );
+  
+    if (!game) {
+      return;
+    }
+  
+    const playerIndex = game.players.findIndex((p) => p.id === playerId);
+    if (playerIndex === -1) {
+
+      return;
+    }
+  
+    const updatedPlayers = [...game.players];
+    updatedPlayers[playerIndex] = {
+      ...updatedPlayers[playerIndex],
+      isSapawed: false
+    };
+  
+    const updatedGame = {...game, players: updatedPlayers};
+
+    io.to(game.id).emit("game-state", sanitizeGameState(updatedGame));
+  
+    // Update the game in your games collection
+    games.set(game.id, updatedGame);
+  });
+
   socket.on("disconnect", () => {
     console.log(`${socket.id} disconnected`);
     for (const [gameId, game] of games) {
@@ -237,6 +270,9 @@ function startGame(game) {
       player.hand.push(game.deck.pop());
     }
     player.exposedMelds = [];
+    player.score = calculateHandPoints(player.hand);
+    player.points = player.hand.reduce((total, card) => total + calculateCardPoints(card), 0);
+    
   });
 
   game.lastAction = { player: playername, type: "Game Started" };
@@ -459,9 +495,11 @@ function handleDiscard(game, cardIndex) {
   const discardedCard = currentPlayer.hand.splice(cardIndex, 1)[0];
   game.discardPile.push(discardedCard);
 
+  currentPlayer.points = currentPlayer.hand.reduce((total, card) => total + calculateCardPoints(card), 0);
+
   game.hasDrawnThisTurn = false;
 
-  if (game.deckEmpty) {
+  if (game.deckEmpty || currentPlayer.points === 0) {
     handleCallDraw(game);
     return;
   }
@@ -573,6 +611,8 @@ function handleShuffle(game, playerIndex) {
   }
 }
 
+//abs function 
+
 // note next game if the game end
 function handleNextGame(game) {
   const preservedConsecutiveWins = game.players.map(
@@ -678,7 +718,7 @@ function handleResetGame(game) {
 
 // note player do fight
 function handleFight(game, playerIndex) {
-  if (game.fightInitiator !== null || !game.hasDrawnThisTurn) return;
+  if (game.fightInitiator !== null) return;
 
   game.fightInitiator = playerIndex;
   game.fightResponses = [];
