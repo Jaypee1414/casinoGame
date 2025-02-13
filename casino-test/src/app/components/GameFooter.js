@@ -13,13 +13,16 @@ const GameFooter = ({
   isPlayerTurn,
   gameEnded,
   hasDrawnThisTurn,
+  selectedCard,
   selectedIndices,
   selectedSapawTarget,
   onAutoSort,
   onShuffle,
   enableFight,
   isCurrentPlayerSapawTarget,
-  isSapawed
+  isSapawed,
+  meld,
+  drawnCard  
 }) => {
   const [scale, setScale] = React.useState(1);
 
@@ -28,12 +31,14 @@ const GameFooter = ({
     setTimeout(() => setScale(1), 300);
   };
 
+  console.log("selectedIndices", drawnCard);
+
   return (
     <div className="px-16 2xl:px-36 flex w-screen items-center gap-11 h-32 absolute bottom-0 left-0 justify-between">
       <div className="space-x-3">
         <button
           onClick={onMeld}
-          disabled={!isPlayerTurn || selectedIndices.length < 3 || !hasDrawnThisTurn || gameEnded}
+          disabled={!isPlayerTurn && (!selectedCard || !hasDrawnThisTurn || gameEnded || meld)}
         >
           <img
             onClick={animateClick}
@@ -43,13 +48,13 @@ const GameFooter = ({
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || selectedIndices.length < 3 || !hasDrawnThisTurn || gameEnded) ? 0.5 : 1
+              opacity: (!isPlayerTurn || !selectedCard || !hasDrawnThisTurn || gameEnded || meld) ? 0.5 : 1
             }}
           />
         </button>
         <button
           onClick={onDiscard}
-          disabled={!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded}
+          disabled={!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded || drawnCard}
         >
           <img
             onClick={animateClick}
@@ -59,7 +64,7 @@ const GameFooter = ({
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded) ? 0.5 : 1
+              opacity: (!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded || drawnCard) ? 0.5 : 1
             }}
           />
         </button>
