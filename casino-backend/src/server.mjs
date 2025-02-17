@@ -53,6 +53,7 @@ function sanitizeGameState(game) {
       isSapawed: player.isSapawed,
       points: player.points,
       turnsPlayed: player.turnsPlayed,
+      groupCards: player.groupCards,
       isBot: player.isBot,
       // Add this flag to identify if the player is the fight initiator
       isFightInitiator:
@@ -131,6 +132,7 @@ io.on("connection", (socket) => {
       hand: [],
       exposedMelds: [],
       secretMelds: [],
+      groupCards: [],
       score: 0,
       consecutiveWins: 0,
       isSapawed: false,
@@ -175,7 +177,7 @@ io.on("connection", (socket) => {
     const playerIndex = game.players.findIndex((p) => p.id === socket.id);
     
     if (action.type === "autoSort") {
-      handleAutoSort(game, action.playerIndices, socket.id);
+      handleAutoSort(game, playerIndex, socket.id);
     } else if (action.type === "shuffle") {
       handleShuffle(game, action.playerIndices, socket.id);
     } else if (
@@ -305,8 +307,10 @@ function handlePlayerAction(game, action, playerIndex) {
         player: playerName,
         type: action.fromDeck ? "drew from deck" : "drew from discard pile",
       };
-      break;
-    
+    break;
+    case "group":
+      groupCardsSelected(game, playerIndex, action.cardIndices);
+    break;
     case "draw":
       handleDraw(game, action.fromDeck, action.meldIndices);
       game.lastAction = {
@@ -434,6 +438,30 @@ function handleDraw(game, fromDeck, meldIndices = []) {
   }
   
 }
+
+function groupCardsSelected(game, playerIndex, cardIndices) {
+  const currentPlayer = game.players[playerIndex];
+
+  if (!currentPlayer.groupCards) {
+    currentPlayer.groupCards = []; // Initialize if not already an array
+  }
+
+  const selectedCards = currentPlayer.hand.filter((_, index) => game.selectedCardIndices.includes(index));
+  const { canMeld } = canFormMeldWithCard(selectedCards[0], currentPlayer.hand);
+
+  if (!isValidMeld(selectedCards)) return;
+
+  cardIndices.sort((a, b) => b - a).forEach((index) => {
+    currentPlayer.hand.splice(index, 1);
+  });
+
+  game.selectedCardIndices = [];
+
+  if (canMeld) {
+    currentPlayer.groupCards.push(selectedCards); // Push the selected cards as a new group
+  }
+}
+
 
 function handleDrawShow(game, fromDeck, meldIndices = []) {
   if (game.hasDrawnThisTurn) return
@@ -576,9 +604,8 @@ function handleSapaw(game, targetPlayerIndex, targetMeldIndex, cardIndices) {
   targetPlayer.isSapawed = true;
   game.selectedCardIndices = [];
 
-  if (currentPlayer.points === 0) {
-    handleCallDraw(game)
-    return;
+  if (currentPlayer.hand.length === 0) {
+    handleTongits(game);
   }
 }
 
@@ -697,51 +724,31 @@ const rankToNumber = (rank) => {
   return rankOrder.indexOf(rank);
 };
 
-function handleAutoSort(game, playerIndices, requestingPlayerId) {
-  playerIndices.forEach((playerId) => {
-    const playerIndex = game.players.findIndex((p) => p.id === playerId)
-    const player = game.players[playerIndex]
-    const hand = player.hand
+function handleAutoSort(game, playerIndex) {
+  const player = game.players[playerIndex];
+  const hand = player?.hand;
 
-    // Allow sorting for all players, regardless of turn
-    const melds = []
-    const remainingCards = [...hand]
+  // Find all possible melds in the hand
+  const melds = [];
+  let remainingCards = [...hand];
 
-    //Added findAndRemoveMeld function
-    function findAndRemoveMeld(cards) {
-      //Implementation of findAndRemoveMeld function.  This is a placeholder and needs to be replaced with the actual implementation.
-      //This example assumes melds are sets of 3 cards of the same rank.
-      for (let i = 0; i < cards.length - 2; i++) {
-        if (cards[i].rank === cards[i + 1].rank && cards[i].rank === cards[i + 2].rank) {
-          const meld = cards.splice(i, 3)
-          return meld
-        }
-      }
-      return null
+  while (true) {
+    const meld = findAndRemoveMeld(remainingCards);
+    if (!meld) break;
+    melds.push(meld);
+  }
+
+  // Sort the melds and remaining cards
+  melds.forEach(meld => meld.sort((a, b) => rankToNumber(a.rank) - rankToNumber(b.rank)));
+  remainingCards.sort((a, b) => {
+    if (a.suit !== b.suit) {
+      return a.suit.localeCompare(b.suit);
     }
+    return rankToNumber(a.rank) - rankToNumber(b.rank);
+  });
 
-    while (true) {
-      const meld = findAndRemoveMeld(remainingCards)
-      if (!meld) break
-      melds.push(meld)
-    }
-    // Sort the melds and remaining cards
-    melds.forEach((meld) => meld.sort((a, b) => rankToNumber(a.rank) - rankToNumber(b.rank)))
-    remainingCards.sort((a, b) => {
-      if (a.suit !== b.suit) {
-        return a.suit.localeCompare(b.suit)
-      }
-      return rankToNumber(a.rank) - rankToNumber(b.rank)
-    })
-    // Combine melds and remaining cards back into the hand
-    player.hand = [...melds.flat(), ...remainingCards]
-
-    if (playerId === requestingPlayerId) {
-      console.log("Player sorted their own hand")
-    } else {
-      console.log("Player's hand was sorted by request")
-    }
-  })
+  // Combine melds and remaining cards back into the hand
+  player.hand = [...melds.flat(), ...remainingCards];
 }
 
 
@@ -835,6 +842,7 @@ function handleResetGame(game) {
     hand: hands[index],
     exposedMelds: [],
     secretMelds: [],
+    groupChat: [],
     score: 0,
     consecutiveWins: 0,
     isSapawed: false,
