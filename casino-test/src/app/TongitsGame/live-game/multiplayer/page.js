@@ -66,7 +66,7 @@ const Game = () => {
   const router = useRouter()
   const hasIncremented = useRef(false)
 
-  const [timer, setTimer] = useState(40)
+  const [timer, setTimer] = useState(2000)
   const [timerExpired, setTimerExpired] = useState(false)
   const timerRef = useRef(null)
   const previousPlayerIndexRef = useRef(null)
@@ -183,7 +183,7 @@ const Game = () => {
       setIsChallengeModalOpen(false)
       setIsDiscardPileOpen(false)
       setIsScoreboardVisible(false)
-      setTimer(40) // Reset timer
+      setTimer(2000) // Reset timer
       setDrawnCardDisplay(null) // Reset drawnCardDisplay
       setDrawnCard(null) // Reset drawnCard
       setShowDrawnCardModal(false) // Hide drawn card modal
@@ -218,7 +218,7 @@ const Game = () => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        setTimer(40)
+        setTimer(2000)
         setTimerExpired(false)
       }
 
@@ -403,6 +403,14 @@ const Game = () => {
             type: "autoSort",
             playerIndices: playerIndices,
             requestingPlayerId: socket.id,})
+        }else if(action.type === "group"){
+          const playerIndices = [socket.id]
+          socket.emit("player-action", {
+            type: "group",
+            playerIndices: playerIndices,
+            cardIndices: selectedIndices,
+            requestingPlayerId: socket.id,})
+            selectedIndices.length > 0 && setSelectedIndices([])
         } else if (action.type === "discard" && selectedIndices.length === 1) {
           setDiscardingIndex(selectedIndices[0])
           setTimeout(() => {
@@ -583,7 +591,7 @@ const Game = () => {
     setIsChallengeModalOpen(false)
     setIsDiscardPileOpen(false)
     setIsScoreboardVisible(false)
-    setTimer(40)
+    setTimer(2000)
     setGameState(null)
     setIsFightModalOpen(false)
     setIsChallengeModalOpen(false)
@@ -606,6 +614,8 @@ const Game = () => {
   const player = gameState.players[playerIndex]
   const isPlayerTurn = gameState.currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket.id)
 
+  console.log("selectedIndices", selectedIndices)
+  console.log("selectedIndices", gameState)
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
@@ -713,6 +723,11 @@ const Game = () => {
 
           <div className="pb-6 mt-10 pr-20 2xl:py-24 2xl:pr-0 ">
             <PlayerHand
+              groupCards={() => {
+                const playerIndices = [socket.id]
+                handleAction({ type: "group", playerIndices: playerIndices, cardIndices: selectedIndices })
+                selectedIndices.length > 0 && setSelectedIndices([])
+              }}
               position={position}
               cardSize={" w-1.5 h-22 p-2 text-4xl"}
               hand={gameState.players.find((p) => p.id === socket.id)?.hand}
