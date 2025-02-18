@@ -30,8 +30,8 @@ const GameFooter = ({
   };
 
   return (
-    <div className="px-16 2xl:px-36 flex w-screen items-center gap-11 h-32 absolute bottom-0 left-0 justify-between">
-      <div className="space-x-3">
+    <div className="flex w-screen items-center pt-7 h-32 absolute bottom-40 left-0 justify-center">
+      <div className="flex flex-row items-center gap-3">
       <button
           onClick={onMeld}
           disabled={!isPlayerTurn && ( !selectedCard || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded)}
@@ -97,7 +97,7 @@ const GameFooter = ({
           />
         </button>
       </div>
-      <div className="h-full flex gap-1 justify-center items-center">
+      {/* <div className="h-full flex gap-1 justify-center items-center">
         <button onClick={onAutoSort}>
           <img
             onClick={animateClick}
@@ -146,7 +146,7 @@ const GameFooter = ({
             }}
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
