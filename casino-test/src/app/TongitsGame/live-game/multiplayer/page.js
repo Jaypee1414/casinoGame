@@ -66,7 +66,7 @@ const Game = () => {
   const router = useRouter()
   const hasIncremented = useRef(false)
 
-  const [timer, setTimer] = useState(30)
+  const [timer, setTimer] = useState(2000)
   const [timerExpired, setTimerExpired] = useState(false)
   const timerRef = useRef(null)
   const previousPlayerIndexRef = useRef(null)
@@ -186,7 +186,7 @@ const Game = () => {
       setIsChallengeModalOpen(false)
       setIsDiscardPileOpen(false)
       setIsScoreboardVisible(false)
-      setTimer(30) // Reset timer
+      setTimer(2000) // Reset timer
       setDrawnCardDisplay(null) // Reset drawnCardDisplay
       setDrawnCard(null) // Reset drawnCard
       setShowDrawnCardModal(false) // Hide drawn card modal
@@ -226,7 +226,7 @@ const Game = () => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        setTimer(30)
+        setTimer(2000)
         setTimerExpired(false)
       }
 
@@ -240,7 +240,7 @@ const Game = () => {
               if (isPlayerTurn && !drawnCard) {
                 handleAutoPlay()
               }
-              return 30
+              return 2000
             }
             return prevTimer - 1
           })
@@ -432,10 +432,18 @@ const Game = () => {
             type: "autoSort",
             playerIndices: playerIndices,
             requestingPlayerId: socket.id,})
-        }else if(action.type === "group"){
+        } else if (action.type === "group"){
           const playerIndices = [socket.id]
           socket.emit("player-action", {
             type: "group",
+            playerIndices: playerIndices,
+            cardIndices: selectedIndices,
+            requestingPlayerId: socket.id,})
+            selectedIndices.length > 0 && setSelectedIndices([])
+        } else if (action.type === "ungroup") {
+          const playerIndices = [socket.id]
+          socket.emit("player-action", {
+            type: "ungroup",
             playerIndices: playerIndices,
             cardIndices: selectedIndices,
             requestingPlayerId: socket.id,})
@@ -587,7 +595,7 @@ const Game = () => {
 
   if (gameStarted && !isDealingDone) {
     return (
-      <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
+      <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
         <DealingAnimation onComplete={() => setIsDealingDone(true)} />
       </div>
     )
@@ -620,7 +628,7 @@ const Game = () => {
     setIsChallengeModalOpen(false)
     setIsDiscardPileOpen(false)
     setIsScoreboardVisible(false)
-    setTimer(30)
+    setTimer(2000)
     setGameState(null)
     setIsFightModalOpen(false)
     setIsChallengeModalOpen(false)
@@ -646,7 +654,7 @@ const Game = () => {
   console.log("selectedIndices", selectedIndices)
   console.log("selectedIndices", gameState)
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
         <div className="flex flex-row h-full w-full justify-between">
           <button onClick={toggleSidebar}>
@@ -757,6 +765,13 @@ const Game = () => {
                 handleAction({ type: "group", playerIndices: playerIndices, cardIndices: selectedIndices })
                 selectedIndices.length > 0 && setSelectedIndices([])
               }}
+
+              ungroupCards={() => {
+                const playerIndices = [socket.id]
+                handleAction({ type: "ungroup", playerIndices: playerIndices, cardIndices: selectedIndices })
+                selectedIndices.length > 0 && setSelectedIndices([])
+              }}
+
               position={position}
               cardSize={" w-1.5 h-22 p-2 text-4xl"}
               hand={gameState.players.find((p) => p.id === socket.id)?.hand}
@@ -802,6 +817,7 @@ const Game = () => {
               selectedIndices={selectedIndices}
               isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
               discardingIndex={discardingIndex}
+              selectedCard={selectedCard}
             />
           </div>
         </div>
