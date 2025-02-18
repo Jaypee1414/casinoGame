@@ -12,7 +12,9 @@ export function PlayerHand({
   selectedIndices,
   isCurrentPlayer,
   discardingIndex,
-  groupCards
+  groupCards,
+  ungroupCards,
+  selectedCard
 }) {
   const containerRef = useRef(null);
   const [selectedCards, setSelectedCards] = useState(new Set())
@@ -66,7 +68,8 @@ export function PlayerHand({
         isCurrentPlayer ? "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem] " : "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]"
       }`}
     >
-      {selectedIndices.length >= 3 && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4" onClick={groupCards}>Group</button>}
+      {selectedCard && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4" onClick={groupCards}>Group</button>}
+
       <div className="w-10 h-10 bg-black">
       </div>
       {hand?.map((card, index) => (
