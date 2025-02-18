@@ -654,31 +654,41 @@ const Game = () => {
   console.log("selectedIndices", selectedIndices)
   console.log("selectedIndices", gameState)
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
-      <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
-        <div className="flex flex-row h-full w-full justify-between">
-          <button onClick={toggleSidebar}>
-            <Image
-              width={100}
-              height={100}
-              onClick={animateClick}
-              src="/image/sideBarButton.svg"
-              alt="Sidebar"
-              className="w-full h-full"
-              style={{
-                transform: `scale(${scale})`,
-                transition: "transform 0.3s ease-in-out",
-              }}
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
+      <header className="absolute top-0 flex flex-row justify-between w-full">
+        <div className="shadow-lg border-2 border-[#FF7EA0] rounded-b-lg bg-gradient-to-b from-[#911638] via-[#911638] via-33% to-[#FF1C59] items-center flex justify-center p-3 rounded-bl-[20px] rounded-br-[20px] drop-shadow-[0px_4px_5px_white]">
+          <label className="hamburger relative z-50">
+            <input
+              type="checkbox"
+              checked={isSidebarOpen}
+              onChange={toggleSidebar}
             />
-          </button>
-          <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-          {/* <NetworkStatus /> */}
-        </div>
-      </div>
+            <svg viewBox="0 0 32 32">
+              <path
+                className="line line-top-bottom"
+                d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+              ></path>
+              <path className="line" d="M7 16 27 16"></path>
+            </svg>
+          </label>
 
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-        <GameHeaderPot betAmout={paramValue} gameState={gameState} socket={socket} />
-      </div>
+          {/* Sidebar */}
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        </div>
+        <div className="w-1/2">
+          <GameHeaderPot
+            betAmout={paramValue}
+            gameState={gameState}
+            socket={socket}
+          />
+        </div>
+        <div className="shadow-lg border-2 border-[#FF7EA0] rounded-b-lg bg-gradient-to-b from-[#911638] via-[#911638] via-33% to-[#FF1C59] items-center flex justify-center p-5"></div>
+      </header>
+
+      
 
       <div className="flex w-full max-w-7xl gap-4">
         <div className="w-full flex flex-col justify-between items-center gap-10">
