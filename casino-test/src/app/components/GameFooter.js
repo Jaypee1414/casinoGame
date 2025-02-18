@@ -2,6 +2,9 @@
 "use client"
 
 import React from "react";
+import PlayerPoints from "@/app/components/PlayerPoints";
+import { calculateCardPoints } from "@/utils/card-utils";
+
 
 const GameFooter = ({
   onMeld,
@@ -20,7 +23,9 @@ const GameFooter = ({
   isCurrentPlayerSapawTarget,
   isSapawed,
   drawnCard,
-  selectedCardSapaw 
+  selectedCardSapaw ,
+  socket,
+  gameState
 }) => {
   const [scale, setScale] = React.useState(1);
 
@@ -30,74 +35,140 @@ const GameFooter = ({
   };
 
   return (
-    <div className="px-16 2xl:px-36 flex w-screen items-center gap-11 h-32 absolute bottom-0 left-0 justify-between">
-      <div className="space-x-3">
+    <div className="flex w-screen items-center pt-7 h-32 absolute bottom-40 left-0 justify-center">
+      <div className="flex flex-row items-center gap-3">
       <button
           onClick={onMeld}
-          disabled={!isPlayerTurn && ( !selectedCard || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded)}
+          disabled={
+            !isPlayerTurn &&
+            (!selectedCard ||
+              selectedIndices.length === 0 ||
+              !hasDrawnThisTurn ||
+              gameEnded)
+          }
+          className="bg-green-500 p-2 rounded-full w-32  bg-gradient-to-t to-[#6BFF8B] from-[#00C22A] drop-shadow-[2px_7px_2px_#1E8E36] border-2 border-[#60FF82]"
         >
-          <img
+          <span
             onClick={animateClick}
-            src="/image/dropButton.svg"
-            alt="Meld"
-            className="w-[115px] 2xl:w-[145px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn ||  ( !selectedCard || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded)) ? 0.5 : 1
+              opacity:
+                !isPlayerTurn ||
+                (!selectedCard ||
+                  selectedIndices.length === 0 ||
+                  !hasDrawnThisTurn ||
+                  gameEnded)
+                  ? 0.5
+                  : 1,
             }}
-          />
+            className="font-black text-xl drop-shadow-[2px_2px_0px_#044412] text-white"
+          >
+            Drop
+          </span>
         </button>
         <button
           onClick={onDiscard}
-          disabled={!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded || drawnCard}
+          disabled={
+            !isPlayerTurn ||
+            selectedIndices.length !== 1 ||
+            !hasDrawnThisTurn ||
+            gameEnded ||
+            drawnCard
+          }
+          className="bg-green-500 p-2 rounded-full w-32  bg-gradient-to-t to-[#F600FF] from-[#C200C9] drop-shadow-[2px_7px_2px_#86008B] border-2 border-[#FB84FF]"
         >
-          <img
+          <span
             onClick={animateClick}
-            src="/image/dumpButton.svg"
-            alt="Discard"
-            className="w-[115px] 2xl:w-[145px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || selectedIndices.length !== 1 || !hasDrawnThisTurn || gameEnded || drawnCard) ? 0.5 : 1
+              opacity:
+                !isPlayerTurn ||
+                selectedIndices.length !== 1 ||
+                !hasDrawnThisTurn ||
+                gameEnded ||
+                drawnCard
+                  ? 0.5
+                  : 1,
             }}
-          />
+            className="font-black text-xl drop-shadow-[2px_2px_0px_#044412] text-white"
+          >
+            Dump
+          </span>
         </button>
         <button
           onClick={onSapaw}
-          disabled={!isPlayerTurn || !selectedCardSapaw || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded}
+          disabled={
+            !isPlayerTurn ||
+            !selectedCardSapaw ||
+            selectedIndices.length === 0 ||
+            !hasDrawnThisTurn ||
+            gameEnded
+          }
+          className="bg-green-500 p-2 rounded-full w-32  bg-gradient-to-t to-[#2AC1EF] from-[#206AB4] drop-shadow-[2px_7px_2px_#106390] border-2 border-[#47B0FF]"
         >
-          <img
+          <span
             onClick={animateClick}
-            src="/image/sapawButton.svg"
-            alt="Sapaw"
-            className="w-[115px] 2xl:w-[145px] h-full"
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || !selectedCardSapaw || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded) ? 0.5 : 1
+              opacity:
+                !isPlayerTurn ||
+                !selectedCardSapaw ||
+                selectedIndices.length === 0 ||
+                !hasDrawnThisTurn ||
+                gameEnded
+                  ? 0.5
+                  : 1,
             }}
-          />
+            className="font-black text-xl drop-shadow-[2px_2px_0px_#044412] text-white"
+          >
+            Sapaw
+          </span>
         </button>
         <button
           onClick={onFight}
-          disabled={ !enableFight || !isPlayerTurn || gameEnded || isCurrentPlayerSapawTarget || hasDrawnThisTurn || isSapawed}
+          disabled={
+            !enableFight ||
+            !isPlayerTurn ||
+            gameEnded ||
+            isCurrentPlayerSapawTarget ||
+            hasDrawnThisTurn ||
+            isSapawed
+          }
+          className="bg-green-500 p-2 rounded-full w-32  bg-gradient-to-t to-[#FFF652] from-[#C8B700] drop-shadow-[2px_7px_2px_#888013] border-2 border-[#FFF467]"
         >
-          <img
-            onClick={animateClick}
-            src="/image/fightButton.svg"
-            alt="Fight"
-            className="w-[115px] 2xl:w-[145px] h-full"
+          <span
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || gameEnded || !enableFight || isCurrentPlayerSapawTarget || hasDrawnThisTurn || isSapawed) ? 0.5 : 1
+              opacity:
+                !isPlayerTurn ||
+                gameEnded ||
+                !enableFight ||
+                isCurrentPlayerSapawTarget ||
+                hasDrawnThisTurn ||
+                isSapawed
+                  ? 0.5
+                  : 1,
             }}
-          />
+            onClick={animateClick}
+            className="font-black text-xl drop-shadow-[2px_2px_0px_#044412] text-white"
+          >
+            Fight
+          </span>
         </button>
+
+        <div className="w-32 h-28 bg-gradient-to-t to-[#FFB96D] from-[#E27500] drop-shadow-[2px_7px_2px_#BF6709] border-2 border-[#FFB059] flex flex-col items-center rounded-xl p-2">
+          <PlayerPoints
+            socket={socket}
+            gameState={gameState}
+            getCardValue={calculateCardPoints}
+          />
+        </div>
       </div>
-      <div className="h-full flex gap-1 justify-center items-center">
+      {/* <div className="h-full flex gap-1 justify-center items-center">
         <button onClick={onAutoSort}>
           <img
             onClick={animateClick}
@@ -146,7 +217,7 @@ const GameFooter = ({
             }}
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

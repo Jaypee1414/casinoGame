@@ -66,7 +66,7 @@ const Game = () => {
   const router = useRouter()
   const hasIncremented = useRef(false)
 
-  const [timer, setTimer] = useState(2000)
+  const [timer, setTimer] = useState(30)
   const [timerExpired, setTimerExpired] = useState(false)
   const timerRef = useRef(null)
   const previousPlayerIndexRef = useRef(null)
@@ -186,7 +186,7 @@ const Game = () => {
       setIsChallengeModalOpen(false)
       setIsDiscardPileOpen(false)
       setIsScoreboardVisible(false)
-      setTimer(2000) // Reset timer
+      setTimer(30) // Reset timer
       setDrawnCardDisplay(null) // Reset drawnCardDisplay
       setDrawnCard(null) // Reset drawnCard
       setShowDrawnCardModal(false) // Hide drawn card modal
@@ -226,7 +226,7 @@ const Game = () => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        setTimer(2000)
+        setTimer(30)
         setTimerExpired(false)
       }
 
@@ -240,7 +240,7 @@ const Game = () => {
               if (isPlayerTurn && !drawnCard) {
                 handleAutoPlay()
               }
-              return 2000
+              return 30
             }
             return prevTimer - 1
           })
@@ -628,7 +628,7 @@ const Game = () => {
     setIsChallengeModalOpen(false)
     setIsDiscardPileOpen(false)
     setIsScoreboardVisible(false)
-    setTimer(2000)
+    setTimer(30)
     setGameState(null)
     setIsFightModalOpen(false)
     setIsChallengeModalOpen(false)
@@ -654,38 +654,47 @@ const Game = () => {
   console.log("selectedIndices", selectedIndices)
   console.log("selectedIndices", gameState)
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
-      <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
-        <div className="flex flex-row h-full w-full justify-between">
-          <button onClick={toggleSidebar}>
-            <Image
-              width={100}
-              height={100}
-              onClick={animateClick}
-              src="/image/sideBarButton.svg"
-              alt="Sidebar"
-              className="w-full h-full"
-              style={{
-                transform: `scale(${scale})`,
-                transition: "transform 0.3s ease-in-out",
-              }}
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative overflow-hidden">
+      <header className="absolute top-0 flex flex-row justify-between w-full">
+        <div className="shadow-lg border-2 border-[#FF7EA0] rounded-b-lg bg-gradient-to-b from-[#911638] via-[#911638] via-33% to-[#FF1C59] items-center flex justify-center p-3 rounded-bl-[20px] rounded-br-[20px] drop-shadow-[0px_4px_5px_white]">
+          <label className="hamburger relative z-50">
+            <input
+              type="checkbox"
+              checked={isSidebarOpen}
+              onChange={toggleSidebar}
             />
-          </button>
-          <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-          {/* <NetworkStatus /> */}
-        </div>
-      </div>
+            <svg viewBox="0 0 32 32">
+              <path
+                className="line line-top-bottom"
+                d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+              ></path>
+              <path className="line" d="M7 16 27 16"></path>
+            </svg>
+          </label>
 
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-        <GameHeaderPot betAmout={paramValue} gameState={gameState} socket={socket} />
-      </div>
+          {/* Sidebar */}
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        </div>
+        <div className="w-1/2">
+          <GameHeaderPot
+            betAmout={paramValue}
+            gameState={gameState}
+            socket={socket}
+          />
+        </div>
+        <div className="shadow-lg border-2 border-[#FF7EA0] rounded-b-lg bg-gradient-to-b from-[#911638] via-[#911638] via-33% to-[#FF1C59] items-center flex justify-center p-5"></div>
+      </header>
+
+      
 
       <div className="flex w-full max-w-7xl gap-4">
         <div className="w-full flex flex-col justify-between items-center gap-10">
           <div className="absolute z-10">
             <MeldedCards
               isPlayerTurn={isPlayerTurn}
-              contextText={`text-3xl`}
               gameState={gameState}
               socket={socket.id}
               players={gameState.players}
@@ -694,165 +703,104 @@ const Game = () => {
               selectedSapawTarget={selectedSapawTarget}
               socketId={socket.id}
               game={gameState}
+              ownPlayerIndex={playerIndex}
+              timer={timer}
             />
           </div>
 
-          <div className="p-4 2xl:px-8 rounded-md flex justify-center space-x-2 mb-10 mt-10 relative">
-            <Deck
-              cardsLeft={gameState.deck.length}
-              onDraw={() => isPlayerTurn && !gameState.gameEnded && handleAction({ type: "drawShow", fromDeck: true })}
-              disabled={gameState.hasDrawnThisTurn || !isPlayerTurn || gameState.gameEnded}
-            />
-            {/* // todo make this a components */}
-            {/* Show drawn card beside the deck */}
-            {drawnCard && isPlayerTurn && (
-              <div className="absolute -left-32 top-10">
-                <div className="flex justify-center flex-col items-center">
-                  <Card card={drawnCard} cardSize={"w-16 h-auto p-1 text-xl 2xl:text-lg"} />
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={handleAcceptCard}
-                      className="px-4 py-2 bg-green-500 rounded-full text-white  hover:bg-green-600"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={handleDenyCard}
-                      className="px-4 py-2 bg-red-500 rounded-full text-white  hover:bg-red-600"
-                    >
-                      Deny
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <DiscardPile
-              currentPlayer={isPlayerTurn}
-              topCard={gameState.discardPile[gameState.discardPile.length - 1]}
-              onDraw={() => isPlayerTurn && !gameState.gameEnded && handleAction({ type: "draw", fromDeck: false })}
-              disabled={gameState.hasDrawnThisTurn || !isPlayerTurn || gameState.gameEnded || !canDrawFromDiscard()}
-              canDraw={canDrawFromDiscard()}
-              setPosition={setPosition}
-            />
-            <Discardpile
-              discardCard={gameState.discardPile}
-              isOpen={isDiscardPileOpen}
-              onClose={() => setIsDiscardPileOpen(false)}
-            />
-            <button className="absolute -right-3 top-12 text-white text-xl" onClick={DiscardPileModal}>
-              <div className="w-full h-10">
-                <Image
-                  onClick={animateClick}
-                  src="/image/viewdiscardButton.svg"
-                  alt="My image"
-                  width={1000}
-                  height={1000}
-                  className="w-5 h-5 animate-pulse"
-                  style={{
-                    transform: `scale(${scale})`,
-                    transition: "transform 0.3s ease-in-out",
-                  }}
+          <div className="flex flex-col w-60 items-center">
+              <h1 className="font-black text-4xl text-center bg-gradient-to-r from-[#5EFF80] to-[#11CB39] text-transparent bg-clip-text drop-shadow-[2px_7px_2px_#044412] tracking-widest">
+                Tong'iT TradisyonaL
+              </h1>
+              <div className="rounded-md flex justify-center relative bg-[rgba(0,0,0,0.2)] gap-2 mt-5 p-5 px-10">
+                <Deck
+                  cardsLeft={gameState.deck.length}
+                  onDraw={() =>
+                    isPlayerTurn &&
+                    !gameState.gameEnded &&
+                    handleAction({ type: "drawShow", fromDeck: true })
+                  }
+                  disabled={
+                    gameState.hasDrawnThisTurn ||
+                    !isPlayerTurn ||
+                    gameState.gameEnded
+                  }
                 />
+                {/* // todo make this a components */}
+                {/* Show drawn card beside the deck */}
+                {drawnCard && isPlayerTurn && (
+                  <div className="absolute -left-32 top-10">
+                    <div className="flex justify-center flex-col items-center">
+                      <Card
+                        card={drawnCard}
+                        cardSize={"w-16 h-auto p-1 text-xl 2xl:text-lg"}
+                      />
+                      <div className="mt-4 flex gap-2">
+                        <button
+                          onClick={handleAcceptCard}
+                          className="px-4 py-2 bg-green-500 rounded-full text-white  hover:bg-green-600"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={handleDenyCard}
+                          className="px-4 py-2 bg-red-500 rounded-full text-white  hover:bg-red-600"
+                        >
+                          Deny
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <DiscardPile
+                  currentPlayer={isPlayerTurn}
+                  topCard={
+                    gameState.discardPile[gameState.discardPile.length - 1]
+                  }
+                  onDraw={() =>
+                    isPlayerTurn &&
+                    !gameState.gameEnded &&
+                    handleAction({ type: "draw", fromDeck: false })
+                  }
+                  disabled={
+                    gameState.hasDrawnThisTurn ||
+                    !isPlayerTurn ||
+                    gameState.gameEnded ||
+                    !canDrawFromDiscard()
+                  }
+                  canDraw={canDrawFromDiscard()}
+                  setPosition={setPosition}
+                />
+                <Discardpile
+                  discardCard={gameState.discardPile}
+                  isOpen={isDiscardPileOpen}
+                  onClose={() => setIsDiscardPileOpen(false)}
+                />
+                <button
+                  className="absolute -right-3 top-12 text-white text-xl"
+                  onClick={DiscardPileModal}
+                >
+                  <div className="w-full h-10">
+                    <Image
+                      onClick={animateClick}
+                      src="/image/viewdiscardButton.svg"
+                      alt="My image"
+                      width={1000}
+                      height={1000}
+                      className="w-5 h-5 animate-pulse"
+                      style={{
+                        transform: `scale(${scale})`,
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                    />
+                  </div>
+                </button>
               </div>
-            </button>
-          </div>
+            </div>
 
-          <div className="pb-6 mt-10 pr-20 2xl:py-24 2xl:pr-0 ">
-          <PlayerHand
-              groupCards={() => {
-                const playerIndices = [socket.id]
-                handleAction({ type: "group", playerIndices: playerIndices, cardIndices: selectedIndices })
-                selectedIndices.length > 0 && setSelectedIndices([])
-              }}
-
-              ungroupCards={() => {
-                const playerIndices = [socket.id]
-                handleAction({ type: "ungroup", playerIndices: playerIndices, cardIndices: selectedIndices })
-                selectedIndices.length > 0 && setSelectedIndices([])
-              }}
-
-              position={position}
-              cardSize={" w-1.5 h-22 p-2 text-4xl"}
-              hand={gameState.players.find((p) => p.id === socket.id)?.hand}
-              onCardClick={(index) => {
-                if (!gameState.gameEnded) {
-                  const newSelectedIndices = selectedIndices.includes(index)
-                    ? selectedIndices.filter((i) => i !== index)
-                    : [...selectedIndices, index];
-             
-                    if (selectedSapawTarget) {
-                      const targetPlayer = gameState.players[selectedSapawTarget.playerIndex]
-                      if (targetPlayer && targetPlayer.exposedMelds) {
-                        const exposedMeld = targetPlayer.exposedMelds[selectedSapawTarget.meldIndex]
-                        setSelectedCards(newSelectedIndices.map((i) => player.hand[i]))
-  
-                        if (exposedMeld && selectedCards.length > 0) {
-                          const combinedMeld = [...exposedMeld, ...selectedCards]
-                          const isMeldValid = isValidMeld(combinedMeld)
-                          setSelectedCardSapaw(isMeldValid)
-                        } else {
-                          setSelectedCardSapaw(false)
-                        }
-                      } else {
-                        setSelectedCardSapaw(false)
-                      }
-                    } else {
-                      setSelectedCardSapaw(false)
-                    }
-  
-                    if (isValidMeld(newSelectedIndices.map((i) => player.hand[i]))) {
-                      setSelectedCard(true);
-                    } else {
-                      setSelectedCard(false);
-                    }
-                    setSelectedIndices(newSelectedIndices);
-                  setSelectedIndices(newSelectedIndices)
-                  handleAction({
-                    type: "updateSelectedIndices",
-                    indices: newSelectedIndices,
-                  })
-                }
-              }}
-              selectedIndices={selectedIndices}
-              isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
-              discardingIndex={discardingIndex}
-              selectedCard={selectedCard}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute right-0 bottom-64 w-24 h-24 ">
-        <PlayerPoints socket={socket} gameState={gameState} getCardValue={calculateCardPoints} />
-      </div>
-      <div className="absolute right-0 bottom-0 w-24 h-24 ">
-        <button onClick={toggleChat}>
-          <Image
-            width={100}
-            height={100}
-            onClick={animateClick}
-            src="/image/chatButton.svg"
-            alt="My image"
-            className="w-24 h-24 absolute right-2 2xl:right-10 bottom-28"
-            style={{
-              transform: `scale(${scale})`,
-              transition: "transform 0.3s ease-in-out",
-            }}
-          />
-        </button>
-      </div>
-
-      <div className="absolute left-5 bottom-56">
-        <GameRound gameState={gameState} />
-        <div
-          className={`absolute top-16 left-1/2 transform -translate-x-1/2  w-14 h-14 flex justify-center items-center p-2`}
-        >
-          <CircularCountdown timer={timer} gameState={gameState} isPlayerTurn={isPlayerTurn} />
-        </div>
-      </div>
-
-      <GameFooter
+          <div className="">
+          <GameFooter
         timer={timer}
         onShuffle={() => {
           // Allow auto-sort for the current player only
@@ -870,10 +818,6 @@ const Game = () => {
             selectedIndices.length >= 3 &&
             !gameState.gameEnded
           ) {
-            setMeld(true);
-            setTimeout(() => {
-              setMeld(false);
-            }, 500);
             handleAction({ type: "meld", cardIndices: selectedIndices });
           }
           selectedIndices.length > 0 && setSelectedIndices([])
@@ -929,7 +873,214 @@ const Game = () => {
         selectedCard={selectedCard}
         drawnCard={drawnCard}
         selectedCardSapaw={selectedCardSapaw}
+        socket={socket}
+        gameState={gameState}
+
       />
+
+          
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute left-28 bottom-5">
+        <div className="flex flex-col items-center ">
+          <div className="bg-white rounded-full h-28 w-28 flex flex-col items-center relative">
+            <CircularCountdown
+              timer={timer}
+              gameState={gameState}
+              isPlayerTurn={isPlayerTurn}
+            />
+
+            {/* if player is talking this will be activated */}
+            {/* <div className="absolute inset-0 rounded-full border-4 border-lime-500"></div> */}
+          </div>
+          {/* PLAYER NAME */}
+          <h1 className="font-black text-xl text-white my-2 drop-shadow-[2px_3px_0px_black]">
+            Jeorge Pakaw
+          </h1>
+          {/* PLAYER BALANCE */}
+          <div className="bg-[rgba(0,0,0,0.2)] flex flex-row items-center gap-2 py-2 rounded-full px-10">
+            <Image
+              src="/image/potbadge.svg"
+              width={50}
+              height={50}
+              alt="Winner Crown"
+              className="w-8 h-8"
+            />
+            <h2 className="font-black text-xl text-[#FFD653] drop-shadow-[2px_3px_0px_black]">
+              2,000
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <PlayerHand
+              groupCards={() => {
+                const playerIndices = [socket.id]
+                handleAction({ type: "group", playerIndices: playerIndices, cardIndices: selectedIndices })
+                selectedIndices.length > 0 && setSelectedIndices([])
+              }}
+
+              ungroupCards={() => {
+                const playerIndices = [socket.id]
+                handleAction({ type: "ungroup", playerIndices: playerIndices, cardIndices: selectedIndices })
+                selectedIndices.length > 0 && setSelectedIndices([])
+              }}
+
+              position={position}
+              cardSize={" w-24 h-28 p-2 text-3xl"}
+              contextText={" text-7xl"}
+              hand={gameState.players.find((p) => p.id === socket.id)?.hand}
+              onCardClick={(index) => {
+                if (!gameState.gameEnded) {
+                  const newSelectedIndices = selectedIndices.includes(index)
+                    ? selectedIndices.filter((i) => i !== index)
+                    : [...selectedIndices, index];
+             
+                    if (selectedSapawTarget) {
+                      const targetPlayer = gameState.players[selectedSapawTarget.playerIndex]
+                      if (targetPlayer && targetPlayer.exposedMelds) {
+                        const exposedMeld = targetPlayer.exposedMelds[selectedSapawTarget.meldIndex]
+                        setSelectedCards(newSelectedIndices.map((i) => player.hand[i]))
+  
+                        if (exposedMeld && selectedCards.length > 0) {
+                          const combinedMeld = [...exposedMeld, ...selectedCards]
+                          const isMeldValid = isValidMeld(combinedMeld)
+                          setSelectedCardSapaw(isMeldValid)
+                        } else {
+                          setSelectedCardSapaw(false)
+                        }
+                      } else {
+                        setSelectedCardSapaw(false)
+                      }
+                    } else {
+                      setSelectedCardSapaw(false)
+                    }
+  
+                    if (isValidMeld(newSelectedIndices.map((i) => player.hand[i]))) {
+                      setSelectedCard(true);
+                    } else {
+                      setSelectedCard(false);
+                    }
+                    
+                    setSelectedIndices(newSelectedIndices);
+                  setSelectedIndices(newSelectedIndices)
+                  handleAction({
+                    type: "updateSelectedIndices",
+                    indices: newSelectedIndices,
+                  })
+                }
+              }}
+              selectedIndices={selectedIndices}
+              isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
+              discardingIndex={discardingIndex}
+              selectedCard={selectedCard}
+            />
+
+      {/* <div className="absolute right-0 bottom-64 w-24 h-24 ">
+        <PlayerPoints socket={socket} gameState={gameState} getCardValue={calculateCardPoints} />
+      </div> */}
+      {/* <div className="absolute right-0 bottom-0 w-24 h-24 ">
+        <button onClick={toggleChat}>
+          <Image
+            width={100}
+            height={100}
+            onClick={animateClick}
+            src="/image/chatButton.svg"
+            alt="My image"
+            className="w-24 h-24 absolute right-2 2xl:right-10 bottom-28"
+            style={{
+              transform: `scale(${scale})`,
+              transition: "transform 0.3s ease-in-out",
+            }}
+          />
+        </button>
+      </div> */}
+
+      {/* <div className="absolute left-5 bottom-56">
+        <GameRound gameState={gameState} />
+        <div
+          className={`absolute top-16 left-1/2 transform -translate-x-1/2  w-14 h-14 flex justify-center items-center p-2`}
+        >
+          <CircularCountdown timer={timer} gameState={gameState} isPlayerTurn={isPlayerTurn} />
+        </div>
+      </div> */}
+
+      {/* <GameFooter
+        timer={timer}
+        onShuffle={() => {
+          // Allow auto-sort for the current player only
+          const playerIndices = [socket.id]
+          handleAction({ type: "shuffle", playerIndices: playerIndices })
+        }}
+        onAutoSort={() => {
+          // Allow auto-sort for the current player only
+          const playerIndices = [socket.id]
+          handleAction({ type: "autoSort", playerIndices: playerIndices })
+        }}
+        onMeld={() => {
+          if (
+            isPlayerTurn &&
+            selectedIndices.length >= 3 &&
+            !gameState.gameEnded
+          ) {
+            handleAction({ type: "meld", cardIndices: selectedIndices });
+          }
+          selectedIndices.length > 0 && setSelectedIndices([])
+        }}
+        onDiscard={() => {
+          if (isPlayerTurn && selectedIndices.length === 1 && !gameState.gameEnded) {
+            setDiscardingIndex(selectedIndices[0])
+            setTimeout(() => {
+              handleAction({ type: "discard", cardIndex: selectedIndices[0] })
+              setSelectedIndices([])
+              setDiscardingIndex(null)
+            }, 200)
+          }
+        }}
+        onSapaw={() => {
+          if (isPlayerTurn && selectedSapawTarget && selectedIndices.length > 0 && !gameState.gameEnded) {
+            handleAction({
+              type: "sapaw",
+              target: selectedSapawTarget,
+              cardIndices: selectedIndices,
+            })
+            setSelectedSapawTarget(null)
+          }
+          selectedIndices.length > 0 && setSelectedIndices([])
+        }}
+        onCallDraw={() => {
+          if (isPlayerTurn && !gameState.gameEnded && currentPlayer.exposedMelds.length > 0) {
+            handleAction({ type: "callDraw" })
+          }
+        }}
+        onFight={() => {
+          if ((isPlayerTurn && !gameState.gameEnded) || !gameState.hasDrawnThisTurn) {
+            handleAction({ type: "fight" })
+          } else {
+            alert("You can't fight")
+          }
+        }}
+        onChallenge={() => {
+          if (isPlayerTurn && !gameState.gameEnded) {
+            // Open a modal to select which player to challenge
+            // For simplicity, we'll just challenge the next player
+            const targetIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length
+            handleAction({ type: "challenge", targetIndex })
+          }
+        }}
+        isPlayerTurn={isPlayerTurn}
+        gameEnded={gameState.gameEnded}
+        hasDrawnThisTurn={gameState.hasDrawnThisTurn}
+        selectedIndices={selectedIndices}
+        selectedSapawTarget={selectedSapawTarget}
+        enableFight={enableFight}
+        isSapawed={isCurrentPlayerSapawTarget}
+        selectedCard={selectedCard}
+        drawnCard={drawnCard}
+        selectedCardSapaw={selectedCardSapaw}
+      /> */}
 
       {gameState.gameEnded && (
         <ScoreDashboard
@@ -971,8 +1122,106 @@ const Game = () => {
       />
 
       {socket && gameState && (
-        <div className="absolute bottom-1/2 right-0">
-          <AudioControls roomId={gameState.id} socket={socket} />
+        <div className="absolute bottom-0 right-0">
+          <div className="flex flex-col ">
+            <div className="flex flex-row gap-2 justify-end items-end p-5">
+              <button
+                onClick={() => {
+                  // Allow auto-sort for the current player only
+                  const playerIndices = [socket.id];
+                  handleAction({
+                    type: "autoSort",
+                    playerIndices: playerIndices,
+                  });
+                }}
+                className="flex flex-col items-center shuffle_btn cursor-pointer"
+              >
+                <div className="rounded-full w-14 h-14 bg-gradient-to-t from-[rgba(231,100,0,0.5)] to-[rgba(255,158,83,0.5)] drop-shadow-[0px_4px_0px_rgba(231,100,0,0.4)] border-2 border-[rgba(255,159,86,0.5)] items-center justify-center flex">
+                  <Image
+                    onClick={animateClick}
+                    src="/image/SORT.svg"
+                    width={80}
+                    height={80}
+                    alt="Winner Crown"
+                    className="w-10 h-10 drop-shadow-[0px_4px_0px_rgba(231,100,0,0.4)]"
+                  />
+                </div>
+                <h1 className="font-black text-white drop-shadow-[2px_3px_0px_black]">
+                  Sort
+                </h1>
+              </button>
+              <button
+                onClick={() => {
+                  // Allow auto-sort for the current player only
+                  const playerIndices = [socket.id];
+                  handleAction({
+                    type: "shuffle",
+                    playerIndices: playerIndices,
+                  });
+                }}
+                className="flex flex-col items-center shuffle_btn cursor-pointer"
+              >
+                <div className="rounded-full w-14 h-14 bg-gradient-to-t from-[rgba(231,100,0,0.5)] to-[rgba(255,158,83,0.5)] drop-shadow-[0px_4px_0px_rgba(231,100,0,0.4)] border-2 border-[rgba(255,159,86,0.5)] items-center justify-center flex">
+                  <Image
+                    onClick={animateClick}
+                    src="/image/shuffle.svg"
+                    width={80}
+                    height={80}
+                    alt="Winner Crown"
+                    className="w-10 h-10 drop-shadow-[0px_4px_0px_rgba(231,100,0,0.4)]"
+                  />
+                </div>
+                <h1 className="font-black text-white drop-shadow-[2px_3px_0px_black]">
+                  Shuffle
+                </h1>
+              </button>
+            </div>
+            <div className=" p-4 gamefooter w-96 ">
+              <div className="flex flex-row gap-3 items-center justify-end">
+                <div className="rounded-full  flex items-center justify-center">
+                  <div className="faq-button bg-gradient-to-t to-[#F0E53B] from-[#FFC300] z-50">
+                    <div className="flex items-center justify-center">
+                      <h1 className="font-bold text-3xl mb-1">🙂</h1>
+                    </div>
+                    <div className="tooltip gap-1">
+                      <button className=" bg-white  rounded-full p-2 px-3">
+                        👍
+                      </button>
+                      <button className=" bg-white  rounded-full p-2 px-3">
+                        👏🏻
+                      </button>
+                      <button className=" bg-white rounded-full p-2 px-3">
+                        🎉
+                      </button>
+                      <button className=" bg-white  rounded-full p-2 px-3">
+                        ✨
+                      </button>
+                      <button className=" bg-white  rounded-full p-2 px-3">
+                        🙂
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  className="chatBtn bg-gradient-to-t to-[#6BFF69] from-[#04E700]"
+                  onClick={toggleChat}
+                >
+                  <svg
+                    onClick={animateClick}
+                    className="w-14 h-9"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="1.6em"
+                    fill="white"
+                    viewBox="0 0 1000 1000"
+                    version="1.1"
+                  >
+                    <path d="M881.1,720.5H434.7L173.3,941V720.5h-54.4C58.8,720.5,10,671.1,10,610.2v-441C10,108.4,58.8,59,118.9,59h762.2C941.2,59,990,108.4,990,169.3v441C990,671.1,941.2,720.5,881.1,720.5L881.1,720.5z M935.6,169.3c0-30.4-24.4-55.2-54.5-55.2H118.9c-30.1,0-54.5,24.7-54.5,55.2v441c0,30.4,24.4,55.1,54.5,55.1h54.4h54.4v110.3l163.3-110.2H500h381.1c30.1,0,54.5-24.7,54.5-55.1V169.3L935.6,169.3z M717.8,444.8c-30.1,0-54.4-24.7-54.4-55.1c0-30.4,24.3-55.2,54.4-55.2c30.1,0,54.5,24.7,54.5,55.2C772.2,420.2,747.8,444.8,717.8,444.8L717.8,444.8z M500,444.8c-30.1,0-54.4-24.7-54.4-55.1c0-30.4,24.3-55.2,54.4-55.2c30.1,0,54.4,24.7,54.4,55.2C554.4,420.2,530.1,444.8,500,444.8L500,444.8z M282.2,444.8c-30.1,0-54.5-24.7-54.5-55.1c0-30.4,24.4-55.2,54.5-55.2c30.1,0,54.4,24.7,54.4,55.2C336.7,420.2,312.3,444.8,282.2,444.8L282.2,444.8z"></path>
+                  </svg>
+                </button>
+                <AudioControls roomId={gameState.id} socket={socket} />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
