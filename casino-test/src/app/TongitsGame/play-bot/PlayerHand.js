@@ -11,7 +11,8 @@ export function PlayerHand({
   onCardClick,
   selectedIndices,
   isCurrentPlayer,
-  discardingIndex
+  discardingIndex,
+  groupCards
 }) {
   const containerRef = useRef(null);
   const [selectedCards, setSelectedCards] = useState(new Set())
@@ -65,6 +66,9 @@ export function PlayerHand({
         isCurrentPlayer ? "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem] " : "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]"
       }`}
     >
+      {selectedIndices.length >= 3 && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4" onClick={groupCards}>Group</button>}
+      <div className="w-10 h-10 bg-black">
+      </div>
       {hand?.map((card, index) => (
         <motion.div
           key={`${card.suit}-${card.rank}-${index}`}
@@ -87,7 +91,7 @@ export function PlayerHand({
           }}
         >
           <Card
-          border={'1px solid black'}
+            border={'1px solid black'}
             position={position}
             opacityCard={`${selectedCards.size === 0 || selectedCards.has(index) ? 'opacity-100' : 'opacity-85'}`}
             cardSize={cardSize}

@@ -66,11 +66,14 @@ const Game = () => {
   const router = useRouter()
   const hasIncremented = useRef(false)
 
-  const [timer, setTimer] = useState(40)
+  const [timer, setTimer] = useState(30)
   const [timerExpired, setTimerExpired] = useState(false)
   const timerRef = useRef(null)
   const previousPlayerIndexRef = useRef(null)
   const hasProcessedTurnEnd = useRef(false)
+  const [selectedCardSapaw, setSelectedCardSapaw] = useState(false);
+  const [selectedCards, setSelectedCards] = useState(null);
+
 
   useEffect(() => {
     const value = searchParams.get("betAmount")
@@ -183,7 +186,7 @@ const Game = () => {
       setIsChallengeModalOpen(false)
       setIsDiscardPileOpen(false)
       setIsScoreboardVisible(false)
-      setTimer(40) // Reset timer
+      setTimer(30) // Reset timer
       setDrawnCardDisplay(null) // Reset drawnCardDisplay
       setDrawnCard(null) // Reset drawnCard
       setShowDrawnCardModal(false) // Hide drawn card modal
@@ -209,7 +212,12 @@ const Game = () => {
 
   useEffect(() => {
     const currentPlayerIndex = gameState?.currentPlayerIndex
-    const isPlayerTurn = gameState && currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket?.id)
+    const isPlayerTurn =
+      gameState &&
+      currentPlayerIndex !== undefined &&
+      gameState.players &&
+      gameState.players.length > 0 &&
+      currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket?.id)
 
     if (!gameState?.gameEnded && isDealingDone) {
       // Reset timer only when the turn changes
@@ -218,7 +226,7 @@ const Game = () => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        setTimer(40)
+        setTimer(30)
         setTimerExpired(false)
       }
 
@@ -232,7 +240,7 @@ const Game = () => {
               if (isPlayerTurn && !drawnCard) {
                 handleAutoPlay()
               }
-              return 40
+              return 30
             }
             return prevTimer - 1
           })
@@ -301,6 +309,27 @@ const Game = () => {
       }
     }
   }, [gameState?.currentPlayerIndex, gameState?.players, socket?.id, gameState?.gameEnded])
+
+  useEffect(() => {
+    if (selectedSapawTarget && gameState?.players) {
+      const targetPlayer = gameState.players[selectedSapawTarget.playerIndex]
+      if (targetPlayer && targetPlayer.exposedMelds) {
+        const exposedMeld = targetPlayer.exposedMelds[selectedSapawTarget.meldIndex]
+        const currentPlayer = gameState.players.find(p => p.id === socket?.id)
+        const selectedCards = selectedIndices.map(i => currentPlayer?.hand[i]).filter(Boolean)
+
+        if (exposedMeld && selectedCards.length > 0) {
+          const combinedMeld = [...exposedMeld, ...selectedCards]
+          const isMeldValid = isValidMeld(combinedMeld)
+          setSelectedCardSapaw(isMeldValid)
+        } else {
+          setSelectedCardSapaw(false)
+        }
+      }
+    } else {
+      setSelectedCardSapaw(false)
+    }
+  }, [gameState, selectedSapawTarget, selectedIndices, socket?.id])
 
   useEffect(() => {
     if (gameState && gameState.players && socket) {
@@ -403,6 +432,14 @@ const Game = () => {
             type: "autoSort",
             playerIndices: playerIndices,
             requestingPlayerId: socket.id,})
+        }else if(action.type === "group"){
+          const playerIndices = [socket.id]
+          socket.emit("player-action", {
+            type: "group",
+            playerIndices: playerIndices,
+            cardIndices: selectedIndices,
+            requestingPlayerId: socket.id,})
+            selectedIndices.length > 0 && setSelectedIndices([])
         } else if (action.type === "discard" && selectedIndices.length === 1) {
           setDiscardingIndex(selectedIndices[0])
           setTimeout(() => {
@@ -583,7 +620,7 @@ const Game = () => {
     setIsChallengeModalOpen(false)
     setIsDiscardPileOpen(false)
     setIsScoreboardVisible(false)
-    setTimer(40)
+    setTimer(30)
     setGameState(null)
     setIsFightModalOpen(false)
     setIsChallengeModalOpen(false)
@@ -606,6 +643,8 @@ const Game = () => {
   const player = gameState.players[playerIndex]
   const isPlayerTurn = gameState.currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket.id)
 
+  console.log("selectedIndices", selectedIndices)
+  console.log("selectedIndices", gameState)
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
@@ -712,7 +751,12 @@ const Game = () => {
           </div>
 
           <div className="pb-6 mt-10 pr-20 2xl:py-24 2xl:pr-0 ">
-            <PlayerHand
+          <PlayerHand
+              groupCards={() => {
+                const playerIndices = [socket.id]
+                handleAction({ type: "group", playerIndices: playerIndices, cardIndices: selectedIndices })
+                selectedIndices.length > 0 && setSelectedIndices([])
+              }}
               position={position}
               cardSize={" w-1.5 h-22 p-2 text-4xl"}
               hand={gameState.players.find((p) => p.id === socket.id)?.hand}
@@ -721,14 +765,32 @@ const Game = () => {
                   const newSelectedIndices = selectedIndices.includes(index)
                     ? selectedIndices.filter((i) => i !== index)
                     : [...selectedIndices, index];
-
+             
+                    if (selectedSapawTarget) {
+                      const targetPlayer = gameState.players[selectedSapawTarget.playerIndex]
+                      if (targetPlayer && targetPlayer.exposedMelds) {
+                        const exposedMeld = targetPlayer.exposedMelds[selectedSapawTarget.meldIndex]
+                        setSelectedCards(newSelectedIndices.map((i) => player.hand[i]))
+  
+                        if (exposedMeld && selectedCards.length > 0) {
+                          const combinedMeld = [...exposedMeld, ...selectedCards]
+                          const isMeldValid = isValidMeld(combinedMeld)
+                          setSelectedCardSapaw(isMeldValid)
+                        } else {
+                          setSelectedCardSapaw(false)
+                        }
+                      } else {
+                        setSelectedCardSapaw(false)
+                      }
+                    } else {
+                      setSelectedCardSapaw(false)
+                    }
+  
                     if (isValidMeld(newSelectedIndices.map((i) => player.hand[i]))) {
                       setSelectedCard(true);
                     } else {
                       setSelectedCard(false);
                     }
-  
-                    // if(isValidMeld())
                     setSelectedIndices(newSelectedIndices);
                   setSelectedIndices(newSelectedIndices)
                   handleAction({
@@ -850,6 +912,7 @@ const Game = () => {
         isSapawed={isCurrentPlayerSapawTarget}
         selectedCard={selectedCard}
         drawnCard={drawnCard}
+        selectedCardSapaw={selectedCardSapaw}
       />
 
       {gameState.gameEnded && (
