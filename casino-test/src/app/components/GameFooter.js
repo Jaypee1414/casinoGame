@@ -19,7 +19,8 @@ const GameFooter = ({
   enableFight,
   isCurrentPlayerSapawTarget,
   isSapawed,
-  drawnCard 
+  drawnCard,
+  selectedCardSapaw 
 }) => {
   const [scale, setScale] = React.useState(1);
 
@@ -65,7 +66,7 @@ const GameFooter = ({
         </button>
         <button
           onClick={onSapaw}
-          disabled={!isPlayerTurn || !selectedSapawTarget || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded}
+          disabled={!isPlayerTurn || !selectedCardSapaw || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded}
         >
           <img
             onClick={animateClick}
@@ -75,7 +76,7 @@ const GameFooter = ({
             style={{
               transform: `scale(${scale})`,
               transition: "transform 0.3s ease-in-out",
-              opacity: (!isPlayerTurn || !selectedSapawTarget || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded) ? 0.5 : 1
+              opacity: (!isPlayerTurn || !selectedCardSapaw || selectedIndices.length === 0 || !hasDrawnThisTurn || gameEnded) ? 0.5 : 1
             }}
           />
         </button>
