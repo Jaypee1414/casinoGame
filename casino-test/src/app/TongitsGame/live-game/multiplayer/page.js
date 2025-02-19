@@ -66,7 +66,7 @@ const Game = () => {
   const router = useRouter()
   const hasIncremented = useRef(false)
 
-  const [timer, setTimer] = useState(30)
+  const [timer, setTimer] = useState(2000)
   const [timerExpired, setTimerExpired] = useState(false)
   const timerRef = useRef(null)
   const previousPlayerIndexRef = useRef(null)
@@ -186,7 +186,7 @@ const Game = () => {
       setIsChallengeModalOpen(false)
       setIsDiscardPileOpen(false)
       setIsScoreboardVisible(false)
-      setTimer(30) // Reset timer
+      setTimer(2000) // Reset timer
       setDrawnCardDisplay(null) // Reset drawnCardDisplay
       setDrawnCard(null) // Reset drawnCard
       setShowDrawnCardModal(false) // Hide drawn card modal
@@ -226,7 +226,7 @@ const Game = () => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        setTimer(30)
+        setTimer(2000)
         setTimerExpired(false)
       }
 
@@ -240,7 +240,7 @@ const Game = () => {
               if (isPlayerTurn && !drawnCard) {
                 handleAutoPlay()
               }
-              return 30
+              return 2000
             }
             return prevTimer - 1
           })
@@ -620,7 +620,7 @@ const Game = () => {
     setIsChallengeModalOpen(false)
     setIsDiscardPileOpen(false)
     setIsScoreboardVisible(false)
-    setTimer(30)
+    setTimer(2000)
     setGameState(null)
     setIsFightModalOpen(false)
     setIsChallengeModalOpen(false)
@@ -643,8 +643,6 @@ const Game = () => {
   const player = gameState.players[playerIndex]
   const isPlayerTurn = gameState.currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket.id)
 
-  console.log("selectedIndices", selectedIndices)
-  console.log("selectedIndices", gameState)
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/TableBot.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
@@ -750,7 +748,7 @@ const Game = () => {
             </button>
           </div>
 
-          <div className="pb-6 mt-10 pr-20 2xl:py-24 2xl:pr-0 ">
+          <div className="pb-6 mt-10 flex fle-row 2xl:py-24 2xl:pr-0">
           <PlayerHand
               groupCards={() => {
                 const playerIndices = [socket.id]
@@ -802,6 +800,8 @@ const Game = () => {
               selectedIndices={selectedIndices}
               isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
               discardingIndex={discardingIndex}
+              player={gameState.players
+                .find((p) => p.id === socket.id)}
             />
           </div>
         </div>

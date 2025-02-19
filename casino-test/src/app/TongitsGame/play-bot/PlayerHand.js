@@ -3,6 +3,7 @@ import { Card } from "./Card";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap';
+import GroupCard from "@/app/components/GroupCard";
 
 export function PlayerHand({
   position,
@@ -12,7 +13,8 @@ export function PlayerHand({
   selectedIndices,
   isCurrentPlayer,
   discardingIndex,
-  groupCards
+  groupCards,
+  player
 }) {
   const containerRef = useRef(null);
   const [selectedCards, setSelectedCards] = useState(new Set())
@@ -62,12 +64,11 @@ export function PlayerHand({
   return (
     <div
       ref={containerRef}
-      className={`flex flex-wrap justify-center p-4 rounded-lg relative ${
-        isCurrentPlayer ? "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem] " : "bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]"
-      }`}
+      className={`flex-row flex-wrap justify-center p-4 rounded-lg relative bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]`}
     >
-      {selectedIndices.length >= 3 && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4" onClick={groupCards}>Group</button>}
-      <div className="w-10 h-10 bg-black">
+      {selectedIndices.length >= 3 && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4 " onClick={groupCards}>Group</button>}
+      <div className="absolute bottom-3 left-10">
+        <GroupCard player={player}/>
       </div>
       {hand?.map((card, index) => (
         <motion.div
