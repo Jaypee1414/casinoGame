@@ -2,11 +2,17 @@ import React from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from '../TongitsGame/play-bot/Card';
 
-function GroupCard({player}) {
+function GroupCard({
+  player, 
+  setIsChecker, 
+  setSelectedGroup,
+  isCurrentPlayer
+}) {
+
   return (
     <div className='w-auto flex flex-row justify-start gap-3 rounded-lg relative'>
         <AnimatePresence>
-    {player.groupCards?.map((group, groupIndex) => (
+    {player?.groupCards?.map((group, groupIndex) => (
         <motion.div
           key={groupIndex}
           initial={{ opacity: 0, y: 20 }}
@@ -14,7 +20,10 @@ function GroupCard({player}) {
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
           className="flex flex-row gap-2" // Keeps each group in a row with gap between cards
-          onClick={()=> console.log("abs dito mo ialgay")}
+          onClick={()=> {
+            setIsChecker(true)
+            setSelectedGroup({ playerIndex: isCurrentPlayer, groupIndex, group })
+          }}
         >
           {group.map((card, cardIndex) => (
             <motion.div

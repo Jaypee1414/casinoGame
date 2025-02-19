@@ -25,6 +25,7 @@ import FightModal from "@/app/components/FightChallengeModal"
 import ChallengeModal from "@/app/components/ChanllengeModal"
 import { Card } from "../../play-bot/Card"
 import AudioControls from "@/app/components/AudioControls"
+import GroupCard from "@/app/components/GroupCard"
 
 const Game = () => {
   const [gameState, setGameState] = useState(null)
@@ -60,7 +61,8 @@ const Game = () => {
   const [isCurrentPlayerSapawTarget, setIsCurrentPlayerSapawTarget] = useState(false);
   const [sapawCounter, setSapawCounter] = useState(1);
   const [selectedCard, setSelectedCard] = useState(false);
-  const [meld, setMeld] = useState(false);
+  const [isChecker, setIsChecker] = useState(false);  
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -318,7 +320,7 @@ const Game = () => {
         const currentPlayer = gameState.players.find(p => p.id === socket?.id)
         const selectedCards = selectedIndices.map(i => currentPlayer?.hand[i]).filter(Boolean)
 
-        if (exposedMeld && selectedCards.length > 0) {
+        if (exposedMeld && selectedCards?.length > 0) {
           const combinedMeld = [...exposedMeld, ...selectedCards]
           const isMeldValid = isValidMeld(combinedMeld)
           setSelectedCardSapaw(isMeldValid)
@@ -436,14 +438,6 @@ const Game = () => {
           const playerIndices = [socket.id]
           socket.emit("player-action", {
             type: "group",
-            playerIndices: playerIndices,
-            cardIndices: selectedIndices,
-            requestingPlayerId: socket.id,})
-            selectedIndices.length > 0 && setSelectedIndices([])
-        } else if (action.type === "ungroup") {
-          const playerIndices = [socket.id]
-          socket.emit("player-action", {
-            type: "ungroup",
             playerIndices: playerIndices,
             cardIndices: selectedIndices,
             requestingPlayerId: socket.id,})
@@ -765,9 +759,11 @@ const Game = () => {
               }}
 
               ungroupCards={() => {
-                const playerIndices = [socket.id]
-                handleAction({ type: "ungroup", playerIndices: playerIndices, cardIndices: selectedIndices })
-                selectedIndices.length > 0 && setSelectedIndices([])
+                handleAction({ 
+                  type: "ungroup", 
+                  target: selectedGroup
+                })
+                  setIsChecker(false)
               }}
 
               position={position}
@@ -785,7 +781,7 @@ const Game = () => {
                         const exposedMeld = targetPlayer.exposedMelds[selectedSapawTarget.meldIndex]
                         setSelectedCards(newSelectedIndices.map((i) => player.hand[i]))
   
-                        if (exposedMeld && selectedCards.length > 0) {
+                        if (exposedMeld && selectedCards?.length > 0) {
                           const combinedMeld = [...exposedMeld, ...selectedCards]
                           const isMeldValid = isValidMeld(combinedMeld)
                           setSelectedCardSapaw(isMeldValid)
@@ -816,8 +812,11 @@ const Game = () => {
               isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
               discardingIndex={discardingIndex}
               selectedCard={selectedCard}
-              player={gameState.players
-                .find((p) => p.id === socket.id)}
+              player={gameState.players.find((p) => p.id === socket.id)}
+              setIsChecker={setIsChecker} 
+              isChecker={isChecker}
+              setSelectedGroup={setSelectedGroup}
+              playerIndex={playerIndex}
             />
           </div>
         </div>
@@ -870,10 +869,6 @@ const Game = () => {
             selectedIndices.length >= 3 &&
             !gameState.gameEnded
           ) {
-            setMeld(true);
-            setTimeout(() => {
-              setMeld(false);
-            }, 500);
             handleAction({ type: "meld", cardIndices: selectedIndices });
           }
           selectedIndices.length > 0 && setSelectedIndices([])
