@@ -651,8 +651,6 @@ const Game = () => {
   const player = gameState.players[playerIndex]
   const isPlayerTurn = gameState.currentPlayerIndex === gameState.players.findIndex((p) => p.id === socket.id)
 
-  console.log("selectedIndices", selectedIndices)
-  console.log("selectedIndices", gameState)
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[url('/image/tablegame2.svg')] bg-no-repeat bg-cover bg-center relative">
       <div className="absolute w-screen h-16 top-0 bg-custom-gradient">
@@ -758,7 +756,7 @@ const Game = () => {
             </button>
           </div>
 
-          <div className="pb-6 mt-10 pr-20 2xl:py-24 2xl:pr-0 ">
+          <div className="pb-6 mt-10 flex fle-row 2xl:py-24 2xl:pr-0">
           <PlayerHand
               groupCards={() => {
                 const playerIndices = [socket.id]
@@ -818,6 +816,8 @@ const Game = () => {
               isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
               discardingIndex={discardingIndex}
               selectedCard={selectedCard}
+              player={gameState.players
+                .find((p) => p.id === socket.id)}
             />
           </div>
         </div>
