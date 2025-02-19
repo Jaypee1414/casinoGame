@@ -800,6 +800,7 @@ const Game = () => {
               selectedIndices={selectedIndices}
               isCurrentPlayer={isPlayerTurn && !gameState.gameEnded}
               discardingIndex={discardingIndex}
+              selectedCard={selectedCard}
               player={gameState.players
                 .find((p) => p.id === socket.id)}
             />

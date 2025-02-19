@@ -14,7 +14,9 @@ export function PlayerHand({
   isCurrentPlayer,
   discardingIndex,
   groupCards,
-  player
+  ungroupCards,
+  selectedCard,
+  player,
 }) {
   const containerRef = useRef(null);
   const [selectedCards, setSelectedCards] = useState(new Set())
