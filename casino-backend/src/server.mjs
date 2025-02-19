@@ -311,6 +311,14 @@ function handlePlayerAction(game, action, playerIndex) {
     case "group":
       groupCardsSelected(game, playerIndex, action.cardIndices);
     break;
+    case "ungroup":
+      ungroupCardsSelected(
+        game, 
+        action.target.playerIndex,
+        action.target.groupIndex,
+        action.target.group
+      );
+    break;
     case "draw":
       handleDraw(game, action.fromDeck, action.meldIndices);
       game.lastAction = {
@@ -462,6 +470,18 @@ function groupCardsSelected(game, playerIndex, cardIndices) {
   }
 }
 
+function ungroupCardsSelected(game, playerIndex, groupIndex, group) {
+
+  const currentPlayer = game.players[playerIndex];
+
+  if (playerIndex && groupIndex) {
+    currentPlayer.groupCards[groupIndex]; 
+  }
+
+  group.map((card) => currentPlayer.hand.push(card));
+
+  group.map((card) => currentPlayer.groupCards.pop(card));
+}
 
 function handleDrawShow(game, fromDeck, meldIndices = []) {
   if (game.hasDrawnThisTurn) return
@@ -796,6 +816,7 @@ function handleNextGame(game) {
     hand: hands[index],
     exposedMelds: [],
     secretMelds: [],
+    groupCards: [],
     score: 0,
     consecutiveWins: preservedConsecutiveWins[index],
     isSapawed: false,
@@ -843,6 +864,7 @@ function handleResetGame(game) {
     exposedMelds: [],
     secretMelds: [],
     groupChat: [],
+    groupCards: [],
     score: 0,
     consecutiveWins: 0,
     isSapawed: false,
