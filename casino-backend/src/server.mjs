@@ -465,7 +465,9 @@ function groupCardsSelected(game, playerIndex, cardIndices) {
   game.selectedCardIndices = [];
 
   if (canMeld) {
-    currentPlayer.groupCards.push(selectedCards); // Push the selected cards as a new group
+     // Sort the selected cards before pushing them to groupCards
+     const sortedCards = selectedCards.sort((a, b) => a.value - b.value);
+     currentPlayer.groupCards.push(sortedCards);  // Push the selected cards as a new group
   }
 }
 
@@ -473,13 +475,15 @@ function ungroupCardsSelected(game, playerIndex, groupIndex, group) {
 
   const currentPlayer = game.players[playerIndex];
 
-  if (playerIndex && groupIndex) {
-    currentPlayer.groupCards[groupIndex]; 
-  }
+  // Add selected cards to player's hand
+  group.forEach((card) => currentPlayer.hand.push(card));
 
-  group.map((card) => currentPlayer.hand.push(card));
-
-  group.map((card) => currentPlayer.groupCards.pop(card));
+  // Remove the selected cards from the group by comparing card IDs
+  currentPlayer.groupCards[groupIndex] = currentPlayer.groupCards[groupIndex]
+    .filter(card => !group.some(selectedCard => selectedCard.id === card.id));
+    if (currentPlayer.groupCards[groupIndex].length === 0) {
+      currentPlayer.groupCards.splice(groupIndex, 1);
+    }
 }
 
 function handleDrawShow(game, fromDeck, meldIndices = []) {
