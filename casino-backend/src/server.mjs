@@ -480,7 +480,11 @@ function ungroupCardsSelected(game, playerIndex, groupIndex, group) {
 
   group.map((card) => currentPlayer.hand.push(card));
 
-  group.map((card) => currentPlayer.groupCards.pop(card));
+  group.map((card, groupCardIndex) =>{
+   if(groupCardIndex === groupIndex){
+    currentPlayer.groupCards.pop(card)
+   } 
+  });
 }
 
 function handleDrawShow(game, fromDeck, meldIndices = []) {
