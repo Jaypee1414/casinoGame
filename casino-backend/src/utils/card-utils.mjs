@@ -180,21 +180,33 @@ export function findAndRemoveMeld(cards) {
   const sortedCards = [...cards].sort(
     (a, b) => rankToNumber(a.rank) - rankToNumber(b.rank)
   );
+  
+  // 2. Loop through the sorted cards, checking each group of 3 cards
   for (let i = 0; i < sortedCards.length - 2; i++) {
+    // 3. Check if three consecutive cards:
+    //    a) Are of the same suit
+    //    b) Have consecutive ranks (like 5,6,7)
     if (
+      // Check if all three cards have the same suit
       sortedCards[i].suit === sortedCards[i + 1].suit &&
       sortedCards[i + 1].suit === sortedCards[i + 2].suit &&
-      rankToNumber(sortedCards[i + 1].rank) -
-        rankToNumber(sortedCards[i].rank) ===
-        1 &&
-      rankToNumber(sortedCards[i + 2].rank) -
-        rankToNumber(sortedCards[i + 1].rank) ===
-        1
+      
+      // Check if ranks are consecutive
+      // (second card's rank minus first card's rank equals 1)
+      rankToNumber(sortedCards[i + 1].rank) - rankToNumber(sortedCards[i].rank) === 1 &&
+      // (third card's rank minus second card's rank equals 1)
+      rankToNumber(sortedCards[i + 2].rank) - rankToNumber(sortedCards[i + 1].rank) === 1
     ) {
+      // 4. If found, create a meld (group of matching cards)
       const meld = [sortedCards[i], sortedCards[i + 1], sortedCards[i + 2]];
+      
+      // 5. Remove these cards from the original cards array
+      // Note: We remove from back to front to avoid index shifting
       cards.splice(cards.indexOf(sortedCards[i + 2]), 1);
       cards.splice(cards.indexOf(sortedCards[i + 1]), 1);
       cards.splice(cards.indexOf(sortedCards[i]), 1);
+      
+      // 6. Return the found meld
       return meld;
     }
   }
