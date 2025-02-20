@@ -439,8 +439,7 @@ const Game = () => {
           socket.emit("player-action", {
             type: "group",
             playerIndices: playerIndices,
-            cardIndices: selectedIndices,
-            requestingPlayerId: socket.id,})
+            cardIndices: selectedIndices,})
             selectedIndices.length > 0 && setSelectedIndices([])
         } else if (action.type === "discard" && selectedIndices.length === 1) {
           setDiscardingIndex(selectedIndices[0])
