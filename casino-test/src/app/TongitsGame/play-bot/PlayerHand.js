@@ -17,6 +17,10 @@ export function PlayerHand({
   ungroupCards,
   selectedCard,
   player,
+  setIsChecker,
+  isChecker,
+  setSelectedGroup,
+  playerIndex
 }) {
   const containerRef = useRef(null);
   const [selectedCards, setSelectedCards] = useState(new Set())
@@ -50,6 +54,7 @@ export function PlayerHand({
 
   const handleCardClick = (index) => {
     if (isCurrentPlayer || !isCurrentPlayer) {
+      setIsChecker(false);
       onCardClick(index);
       setSelectedCards(prev => {
         const newSet = new Set(prev);
@@ -68,9 +73,29 @@ export function PlayerHand({
       ref={containerRef}
       className={`flex-row flex-wrap justify-center p-4 rounded-lg relative bg-opacity-10 shadow-lg h-60 w-[66rem] 2xl:w-[75rem]`}
     >
-      {selectedIndices.length >= 3 && <button className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4 " onClick={groupCards}>Group</button>}
+      {selectedCard && !isChecker && (
+        <button
+          className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4"
+          onClick={groupCards}
+        >
+          Group
+        </button>
+      )}
+      {isChecker && (
+        <button
+          className="text-white rounded-full bg-green-600 h-10 w-auto py-2 px-4"
+          onClick={ungroupCards}
+        >
+          Ungroup
+        </button>
+
+      )}
       <div className="absolute bottom-3 left-10">
-        <GroupCard player={player}/>
+        <GroupCard player={player} 
+        setIsChecker={setIsChecker} 
+        setSelectedGroup={setSelectedGroup}
+        isCurrentPlayer={playerIndex}
+        />
       </div>
       {hand?.map((card, index) => (
         <motion.div
