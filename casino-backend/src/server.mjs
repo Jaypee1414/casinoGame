@@ -178,7 +178,9 @@ io.on("connection", (socket) => {
     
     if (action.type === "autoSort") {
       handleAutoSort(game, playerIndex, socket.id);
-    } else if (action.type === "shuffle") {
+    } else if(action.type === "group"){
+      groupCardsSelected(game, playerIndex, action.cardIndices);
+    }else if (action.type === "shuffle") {
       handleShuffle(game, action.playerIndices, socket.id);
     } else if (
       playerIndex === game.currentPlayerIndex ||
@@ -450,11 +452,8 @@ function handleDraw(game, fromDeck, meldIndices = []) {
 function groupCardsSelected(game, playerIndex, cardIndices) {
   const currentPlayer = game.players[playerIndex];
 
-  if (!currentPlayer.groupCards) {
-    currentPlayer.groupCards = []; // Initialize if not already an array
-  }
 
-  const selectedCards = currentPlayer.hand.filter((_, index) => game.selectedCardIndices.includes(index));
+  const selectedCards = currentPlayer.hand.filter((_, index) => cardIndices.includes(index));
   const { canMeld } = canFormMeldWithCard(selectedCards[0], currentPlayer.hand);
 
   if (!isValidMeld(selectedCards)) return;
