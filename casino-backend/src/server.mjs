@@ -537,6 +537,9 @@ function handleAddDrawnCardToHand(game) {
 
   const currentPlayer = game.players[game.currentPlayerIndex]
   currentPlayer.hand.push(game.drawnCard)
+  currentPlayer.points = currentPlayer.hand.reduce((total, card) => total + calculateCardPoints(card), 0);
+  currentPlayer.score = calculateHandPoints(currentPlayer.hand)
+  console.log("currentPlayer.points",currentPlayer.points)
   game.drawnCard = null
   game.drawnCardVisible = false
 }
@@ -552,6 +555,7 @@ function handleDiscard(game, cardIndex) {
   const discardedCard = currentPlayer.hand.splice(cardIndex, 1)[0];
   game.discardPile.push(discardedCard);
   currentPlayer.points = currentPlayer.hand.reduce((total, card) => total + calculateCardPoints(card), 0);
+  currentPlayer.score = calculateHandPoints(currentPlayer.hand);
   game.hasDrawnThisTurn = false;
 
   if (game.deckEmpty || currentPlayer.points === 0) {
